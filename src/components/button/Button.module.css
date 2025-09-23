@@ -1,0 +1,95 @@
+.button {
+  border: none;
+  border-radius: 9999px; /* 完全な丸み */
+  cursor: pointer;
+  font-weight: 600;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.08s ease;
+  user-select: none;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25); /* ベース影 */
+}
+
+.fullWidth {
+  width: 100%;
+}
+
+.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* サイズ */
+.sm {
+  padding: 0.5rem 0.875rem;
+  font-size: 0.875rem;
+}
+
+.md {
+  padding: 0.75rem 1.25rem;
+  font-size: 1rem;
+}
+
+.lg {
+  padding: 1rem 1.5rem;
+  font-size: 1.125rem;
+}
+
+/* 配色 */
+.primary {
+  background: linear-gradient(135deg, #e3662a 0%, #ff7b3d 60%, #ff9a66 100%);
+  color: #fff;
+  box-shadow: 0 6px 16px rgba(227, 102, 42, 0.35); /* テーマ色の柔らかいグロー */
+}
+.primary:hover {
+  background: linear-gradient(135deg, #d95f26 0%, #ff6f2d 60%, #ff8a4d 100%);
+  box-shadow: 0 10px 22px rgba(227, 102, 42, 0.45);
+}
+.primary:active {
+  transform: translateY(1px);
+}
+.primary:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(227, 102, 42, 0.35);
+}
+
+.secondary {
+  background-color: #2a2a2a;
+  color: #ffb896; /* オレンジ系の落ち着いた文字色 */
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.35);
+}
+.secondary:hover {
+  background-color: #333333;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.45);
+}
+.secondary:active {
+  transform: translateY(1px);
+}
+.secondary:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(17, 24, 39, 0.15);
+}
+
+.ghost {
+  background-color: transparent;
+  color: #ff7b3d;
+  border: 1px solid rgba(227, 102, 42, 0.6);
+  box-shadow: 0 4px 10px rgba(227, 102, 42, 0.2);
+}
+.ghost:hover {
+  background-color: rgba(227, 102, 42, 0.08);
+  box-shadow: 0 6px 14px rgba(227, 102, 42, 0.28);
+}
+.ghost:active {
+  transform: translateY(1px);
+}
+.ghost:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(227, 102, 42, 0.25);
+}
+
+
