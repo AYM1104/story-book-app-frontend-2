@@ -1,28 +1,42 @@
-"use client";
-
-import BackgroundStars from "../../components/BackgroundStars";
-import LoginCard from "../../components/LoginCard";
+"use client"
+import BackgroundStars from '../../components/BackgroundStars'
+import Header from "@/components/Header"
+import Character from "@/components/Character"
 import Button from "@/components/button/Button";
+import Card from "@/components/Card/Card";
+import styles from "./Test.module.css";
 
 export default function Page() {
-  const handleLogin = (email: string, password: string) => {
-    console.log(email, password);
-  };
   return (
     <BackgroundStars>
-      <main className="p-8 text-white">
-        <h1 className="text-2xl font-bold">えほんのたね</h1>
-        <p>ここにUIを載せると、星は背景になります。</p>
-        <div className="mt-4 flex flex-wrap gap-3">
-          <Button>Primary</Button>
-          <Button variant="secondary">Secondary</Button>
-          <Button variant="ghost" size="sm">Ghost Small</Button>
-          <Button size="lg">Large</Button>
-          <Button fullWidth>Full Width</Button>
-          <Button disabled>Disabled</Button>
-        </div>
-        {/* <LoginCard onSubmit={handleLogin} /> */}
-      </main>
+      <Header />
+
+      {/* 見出し */}
+      <div className="flex justify-center text-center">
+        <p className={`${styles.desc} relative z-10`}>
+          きょうは
+          <br className={styles.mobileBreak} />
+          どんなえほんのせかいへ？
+        </p>
+      </div>
+
+      {/* ボタン */}
+      <div className="flex justify-center">
+        <Button width={280} className="relative -mt-2 z-10">
+          えほんをつくる
+        </Button>
+      </div>
+
+      {/* カード */}
+      <div className="flex justify-center">
+        <Card height="400px" offsetY={70}>かこにつくったえほん</Card>
+      </div>
+
+      {/* キャラクター */}
+      <div className="min-h-screen flex items-center justify-center pb-48 md:pb-56">
+        <Character className="fixed left-1/2 bottom-0 -translate-x-1/2 pb-8 z-0" />
+      </div>
     </BackgroundStars>
-  );
+  )
 }
+    
