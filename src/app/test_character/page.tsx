@@ -1,3 +1,4 @@
+"use client"
 import BackgroundStars from '../../components/BackgroundStars'
 import Header from "@/components/Header"
 import Character from "@/components/Character/Character"
