@@ -1,0 +1,44 @@
+/* 見出しテキストコンポーネント用のスタイル */
+
+.headingText {
+  color: #F8F8FA;                /* 薄い白系の文字色で背景とのコントラストを確保 */
+  margin: 0;              /* 全ての余白を削除 */
+  line-height: 1.7;              /* 読みやすさのための行間 */
+  text-shadow:                    /* 発光感を出す多重テキストシャドウ */
+    0 0 6px rgba(255, 255, 255, 0.5),
+    0 0 14px rgba(227, 102, 42, 0.35);
+  font-size: inherit;            /* Tailwindクラスのフォントサイズを継承 */
+}
+
+/* 発光アニメーション */
+.glowAnimation {
+  animation: glowPulse 2.6s ease-in-out infinite; /* 光の強弱を繰り返すアニメーション */
+}
+
+/* 発光の強弱をつけるキーフレーム定義 */
+@keyframes glowPulse {
+  0%,
+  100% {
+    /* 弱めの光（開始/終了） */
+    text-shadow: 0 0 6px rgba(255, 255, 255, 0.5), 0 0 14px rgba(227, 102, 42, 0.35);
+  }
+  50% {
+    /* 中間で強めの光にしてメリハリを出す */
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.7), 0 0 22px rgba(227, 102, 42, 0.55);
+  }
+}
+
+/* sm以下（640px以下）で改行を表示 */
+.mobileBreak {
+  display: none; /* md以上（768px以上）では非表示 */
+}
+
+/* ============================================
+   sm以下（640px以下）の設定
+   ============================================ */
+@media (max-width: 640px) {
+  /* 改行要素：sm以下で表示 */
+  .mobileBreak {
+    display: inline;
+  }
+}

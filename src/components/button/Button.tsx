@@ -1,82 +1,43 @@
-"use client";
 
-import React, { forwardRef, ButtonHTMLAttributes, ReactNode } from "react";
-import styles from "./Button.module.css";
-
-export type ButtonVariant = "primary" | "secondary" | "ghost";
-export type ButtonSize = "sm" | "md" | "lg";
-
-export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  /** 子要素（ボタンラベルなど） */
-  children: ReactNode;
-  /** 配色バリアント */
-  variant?: ButtonVariant;
-  /** サイズ */
-  size?: ButtonSize;
-  /** 横幅いっぱいにするか */
-  fullWidth?: boolean;
-  /** 固定幅（例: 200 or "12rem"） */
-  width?: number | string;
-  /** 最小幅 */
-  minWidth?: number | string;
-  /** 最大幅 */
-  maxWidth?: number | string;
+interface ButtonProps {
+  children: React.ReactNode;
+  disabled?: boolean;
+  className?: string;
+  onClick?: () => void;
+  width?: number; // ボタンの幅を指定するプロパティ
 }
 
-/**
- * 角がない丸い（ピル型）ボタンコンポーネント
- * - 完全な丸み: border-radius: 9999px
- * - アクセシビリティ: フォーカスリング対応
- */
-export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  (
-    {
-      children,
-      className,
-      variant = "primary",
-      size = "md",
-      fullWidth = false,
-      width,
-      minWidth,
-      maxWidth,
-      type = "button",
-      disabled,
-      ...rest
-    },
-    ref
-  ) => {
-    const styleFromProps = {
-      width: width !== undefined ? (typeof width === "number" ? `${width}px` : width) : undefined,
-      minWidth: minWidth !== undefined ? (typeof minWidth === "number" ? `${minWidth}px` : minWidth) : undefined,
-      maxWidth: maxWidth !== undefined ? (typeof maxWidth === "number" ? `${maxWidth}px` : maxWidth) : undefined,
-    } as const;
-
-    return (
-      <button
-        ref={ref}
-        type={type}
-        disabled={disabled}
-        className={[
-          styles.button,
-          styles[variant],
-          styles[size],
-          fullWidth ? styles.fullWidth : "",
-          disabled ? styles.disabled : "",
-          className || "",
-        ]
-          .filter(Boolean)
-          .join(" ")}
-        style={{ ...(rest.style || {}), ...styleFromProps }}
-        {...rest}
-      >
-        {children}
-      </button>
-    );
-  }
-);
-
-Button.displayName = "Button";
-
-export default Button;
-
-
+export default function Button({ children, disabled, className, onClick, width }: ButtonProps) {
+  return (
+    <button
+      disabled={disabled}
+      onClick={onClick}
+      style={{ width: width ? `${width}px` : undefined }}
+      className={`
+        pt-1 pb-2 px-4 xs:px-7 sm:px-10 md:px-12 lg:px-15    // レスポンシブパディング
+        mt-6 xs:mt-13 sm:mt-9 md:mt-12 lg:mt-13 xl:mt-2     // レスポンシブ_マージン
+        text-lg md:text-xl lg:text-2xl xl:text-xl         // フォントサイズ
+        font-semibold                     // フォントウェイト
+        rounded-3xl                      // 角丸
+        bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-500 text-white  // 目立つエメラルド・ティールグラデーション
+        shadow-lg hover:shadow-2xl       // より強いシャドウ効果
+        shadow-emerald-400/50            // エメラルドの光るシャドウ
+        transform hover:scale-105        // 控えめな拡大効果
+        transition-all duration-200      // スムーズなアニメーション
+        hover:from-emerald-400 hover:via-teal-400 hover:to-cyan-400  // ホバー時に明るく変化
+        hover:shadow-emerald-400/60      // ホバー時の強い光るシャドウ
+        border border-emerald-300/50      // 光るボーダー
+        hover:border-emerald-200/70       // ホバー時の明るいボーダー
+        relative overflow-hidden          // 光るアニメーション用
+        animate-pulse hover:animate-none  // その場で大きくなったり小さくなったり（ホバー時は停止）
+        active:scale-95                  // クリック時の縮小効果
+        disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:animate-none  // 無効状態のスタイル
+        ${className || ''}               // 外部から渡された追加クラス
+      `}
+    >
+      {/* 光るエフェクト */}
+      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full hover:translate-x-full transition-transform duration-1000 ease-out"></div>
+      <span className="relative z-10">{children}</span>
+    </button>
+  );
+}

@@ -27,12 +27,20 @@ export default function useStoryTheme(): UseStoryThemeReturn {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // 初期化: テスト用の固定ID設定
+  // 初期化: ローカルストレージからIDを取得
   useEffect(() => {
-    const DEFAULT_STORY_SETTING_ID = 4; // ← テスト用に存在するIDに合わせて変更可
-    const DEFAULT_USER_ID = 1; // ← テスト用: 認証が未実装の場合は仮固定
-    setStorySettingId(DEFAULT_STORY_SETTING_ID);
-    setUserId(DEFAULT_USER_ID);
+    try {
+      // ローカルストレージからstory_setting_idを取得
+      const savedStorySettingId = localStorage.getItem('story_setting_id');
+      if (savedStorySettingId) {
+        setStorySettingId(parseInt(savedStorySettingId));
+      }
+      
+      // ユーザーIDを固定値1に設定
+      setUserId(1);
+    } catch (err) {
+      console.error('ローカルストレージ読み込みエラー:', err);
+    }
   }, []);
 
   // 最新3件タイトル取得

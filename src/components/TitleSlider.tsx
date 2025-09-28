@@ -1,4 +1,4 @@
-import Button from "@/components/button/Button";
+import Button from "@/components/Button/Button";
 
 interface TitleItem {
   story_plot_id: number;

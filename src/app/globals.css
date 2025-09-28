@@ -1,11 +1,30 @@
 @import "tailwindcss";
 
+@source "./**/*.{ts,tsx,js,jsx}";
+
+/* Tailwind CSS v4のカスタムテーマ設定 */
+@theme {
+  --breakpoint-xs: 350px;
+  --breakpoint-sm: 400px;
+  --breakpoint-md: 750px;
+  --breakpoint-lg: 1000px;
+  --breakpoint-xl: 1200px;
+}
+
+/* デバッグ用：ブレークポイントの動作確認 */
+@media (min-width: 400px) {
+  .xs-test {
+    background-color: blue !important;
+  }
+}
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
 }
 
-@theme inline {
+/* CSS変数の定義 */
+:root {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
@@ -23,4 +42,23 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* スクロールバーを非表示にするユーティリティクラス */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;  /* Chrome, Safari and Opera */
+}
+
+/* 行数制限のユーティリティクラス */
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }

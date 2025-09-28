@@ -1,15 +1,19 @@
 "use client"
-import { useRef } from 'react'
 import BackgroundStars from '../../components/BackgroundStars'
 import Header from "@/components/Header"
-import Character from "@/components/Character"
-import Button from "@/components/button/Button";
+import Character from "@/components/Character/Character"
+import Button from '@/components/Button/Button';
 import Card from "@/components/Card/Card";
-import styles from './UploadImage.module.css';
-import useImageUpload from '@/hooks/useImageUpload'
+import HeadingText from "@/components/HeadingText/HeadingText";
+import { useRouter } from "next/navigation";
+import { useRef } from 'react';
+import useImageUpload from '@/hooks/useImageUpload';
 
 export default function Page() {
+  const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement | null>(null)
+
+  // 画像アップロードフック
   const {
     isUploading,
     publicImageUrl,
@@ -22,46 +26,48 @@ export default function Page() {
     fileInputRef.current?.click()
   }
 
-  // アップロード後の確定はフック内のハンドラを使用
-
   return (
     <BackgroundStars>
       <Header />
 
       {/* 見出し */}
-      <div className="flex justify-center text-center">
-        <p className={`${styles.desc} relative z-10`}>
-          どの え でえほんを
-          <br className={styles.mobileBreak} />
-          つくろうかな？
-        </p>
+      <div className="flex justify-center text-center mt-2 md:mt-8 lg:mt-1">
+        <div className="relative z-10">
+          <HeadingText>
+            どんな え でえほんを
+            <br className="md:hidden" />
+            つくろうかな？
+          </HeadingText>
+        </div>
       </div>
 
       {/* ボタン */}
       <div className="flex justify-center">
-        <Button width={280} className="relative -mt-2 z-10" onClick={handleClickUpload}>
-          {isUploading ? 'アップロード中...' : '画像をアップロード'}
-        </Button>
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept="image/*"
-          className="hidden"
-          onChange={handleFileChange}
-        />
+        <div className="relative z-10">
+          <Button onClick={handleClickUpload}>        
+            {isUploading ? 'アップロード中...' : '画像をアップロード'}
+          </Button>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={handleFileChange}
+          />
+        </div>
       </div>
 
       {/* カード */}
       <div className="flex justify-center">
-        <Card height="400px" offsetY={70}>
-          {publicImageUrl ? (
+        <Card>
+        {publicImageUrl ? (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
               <img
                 src={publicImageUrl}
                 alt="uploaded"
                 style={{ maxWidth: '100%', maxHeight: '220px', objectFit: 'contain' }}
               />
-              <Button width={180} className="relative mt-10 z-10" onClick={handleConfirmImage}>
+              <Button className="relative mt-10 z-10" onClick={handleConfirmImage}>
                 この画像にけってい
               </Button>
             </div>
@@ -69,13 +75,10 @@ export default function Page() {
             'アップロードされた画像'
           )}
         </Card>
-      </div>
+      </div>  
 
       {/* キャラクター */}
-      <div className="min-h-screen flex items-center justify-center pb-48 md:pb-56">
-        <Character className="fixed left-1/2 bottom-0 -translate-x-1/2 pb-8 z-0" />
-      </div>
-
+      <Character bottomAligned={true} useContainerStyle={true} />
     </BackgroundStars>
   )
 }

@@ -32,10 +32,12 @@ export function useImageUpload() {
     const file = e.target.files?.[0]
     if (!file) return
 
+    // ユーザーIDを固定値1に設定
+    const savedUserId = '1'
+
     const formData = new FormData()
     formData.append('file', file)
-    // 認証導入後に実ユーザーIDへ置き換え
-    formData.append('user_id', String(1))
+    formData.append('user_id', savedUserId)
 
     setIsUploading(true)
     try {
@@ -48,7 +50,16 @@ export function useImageUpload() {
         throw new Error(msg || 'Upload failed')
       }
       const data = await res.json()
-      setUploadedImagePath(data?.file_path ?? null)
+      const filePath = data?.file_path ?? null
+      setUploadedImagePath(filePath)
+      try {
+        if (filePath) {
+          localStorage.setItem('uploaded_image_path', filePath)
+        }
+        if (typeof data?.id === 'number') {
+          localStorage.setItem('uploaded_image_id', String(data.id))
+        }
+      } catch {}
       setUploadedImageId(typeof data?.id === 'number' ? data.id : null)
       e.target.value = ''
     } catch (err) {
@@ -73,6 +84,13 @@ export function useImageUpload() {
         throw new Error(msg || 'Create story setting failed')
       }
       const result = await res.json()
+      
+      // 物語設定の詳細情報をローカルストレージに保存
+      if (result.generated_data) {
+        localStorage.setItem('story_setting_data', JSON.stringify(result.generated_data))
+        localStorage.setItem('story_setting_id', String(result.story_setting_id))
+      }
+      
       // 物語設定が完了したら question ページへ遷移
       router.push('/question')
     } catch (err) {

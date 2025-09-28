@@ -1,27 +1,25 @@
 "use client";
 import { useState, useEffect, ReactNode } from "react";
-import { Box } from "@mui/material";
 
 interface CardProps {
   children: ReactNode;
-  maxWidth?: string | number;
-  height?: string | number;
   /** カード全体を縦方向にずらす量（例: 16 or "24px"） */
   offsetY?: number | string;
   className?: string;
   style?: React.CSSProperties;
   /** ラベルの文字色 */
   labelColor?: string;
+  /** カードの横幅サイズ ('small' | 'medium' | 'large' | 'full') */
+  width?: 'small' | 'medium' | 'large' | 'full';
 }
 
 export default function Card({ 
   children, 
-  maxWidth = "420px", 
-  height = "500px",
   offsetY,
   className,
   style,
-  labelColor = "white"
+  labelColor = "white",
+  width = "medium"
 }: CardProps) {
   const [isVisible, setIsVisible] = useState(true);
 
@@ -32,74 +30,68 @@ export default function Card({
 
   const translateY = offsetY !== undefined ? (typeof offsetY === "number" ? `${offsetY}px` : offsetY) : undefined;
 
+  // 横幅サイズに応じたクラスを取得
+  const getWidthClasses = () => {
+    switch (width) {
+      case 'small':
+        return 'max-w-xs xs:max-w-sm sm:max-w-md md:max-w-xl lg:max-w-2xl';
+      case 'medium':
+        return 'max-w-sm xs:max-w-md sm:max-w-lg md:max-w-2xl lg:max-w-3xl';
+      case 'large':
+        return 'max-w-md xs:max-w-lg sm:max-w-xl md:max-w-3xl lg:max-w-4xl';
+      case 'full':
+        return 'max-w-full';
+      default:
+        return 'max-w-sm xs:max-w-md sm:max-w-lg md:max-w-2xl lg:max-w-3xl';
+    }
+  };
+
   return (
-    <div style={{
-      position: "absolute",
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      padding: "0 1rem",
-      zIndex: 10,
-      pointerEvents: "none",
-      transform: translateY ? `translateY(${translateY})` : undefined
-    }}>
+    <div 
+      className={`
+        absolute bottom-0 left-0 right-0
+        flex justify-center items-end
+        px-2 xs:px-4 sm:px-6 md:px-8 lg:px-10    // レスポンシブパディング
+        pb-60 xs:pb-60 sm:pb-60 md:pb-70 lg:pb-65   // 画面下部からの距離
+        z-10 pointer-events-none
+        ${translateY ? `transform translate-y-[${translateY}]` : ''}
+      `}
+      style={translateY ? { transform: `translateY(${translateY})` } : undefined}
+    >
       <div 
-        className={className}
-        style={{
-          width: "100%",
-          maxWidth,
-          height,
-          textAlign: "center",
-          position: "relative",
-          overflow: "hidden",
-          pointerEvents: "auto",
+        className={`
+          w-full
+          ${getWidthClasses()}    // 動的なレスポンシブ最大幅
+          h-96 xs:h-[20rem] sm:h-[24rem] md:h-[28rem] lg:h-[36rem]   // レスポンシブ高さ
+          text-center relative overflow-hidden pointer-events-auto
           
-          // 美しい透明ガラス効果（backdrop-filterなし）
-          background: "linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0.1) 100%)",
-          border: "1px solid rgba(255, 255, 255, 0.3)",
-          borderRadius: "1rem",
+          // ガラス風の透明効果
+          bg-gradient-to-br from-white/15 via-white/5 to-white/10
+          border border-white/30 rounded-2xl
           
-          // 強い輝き効果（アニメーションなし）
-          boxShadow: `0 8px 40px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 0 30px rgba(255, 255, 255, 0.3), 0 0 60px rgba(102, 126, 234, 0.4), 0 0 90px rgba(255, 255, 255, 0.2)`,
-          ...style
-        }}
+          // 強い輝き効果
+          shadow-[0_8px_40px_rgba(0,0,0,0.2),inset_0_1px_0_rgba(255,255,255,0.2),0_0_30px_rgba(255,255,255,0.3),0_0_60px_rgba(102,126,234,0.4),0_0_90px_rgba(255,255,255,0.2)]
+          
+          ${className || ''}
+        `}
+        style={style}
       >
-        {/* ガラス風の内側ハイライト（線なし） */}
-        <div style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          height: "100%",
-          background: "linear-gradient(180deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 50%, rgba(255,255,255,0.05) 100%)",
-          borderRadius: "1rem",
-          pointerEvents: "none"
-        }} />
+        {/* ガラス風の内側ハイライト */}
+        <div className="absolute inset-0 bg-gradient-to-b from-white/8 via-white/2 to-white/5 rounded-2xl pointer-events-none" />
         
         {/* ガラス風のコンテンツエリア */}
-        <Box sx={{
-          position: "relative",
-          zIndex: 1,
-          height: "100%",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "flex-start",
-          padding: "1.5rem",
-          color: labelColor,
-          fontSize: "1.125rem",
-          fontWeight: 500,
-          // テキストに強い輝き効果を追加（黒系の場合は輝きを調整）
-          textShadow: labelColor === "white" 
-            ? "0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.6), 0 0 30px rgba(255, 255, 255, 0.4)"
-            : "0 0 10px rgba(0, 0, 0, 0.3), 0 0 20px rgba(0, 0, 0, 0.2)"
-        }}>
+        <div className={`
+          relative z-10 h-full flex flex-col items-center justify-start
+          p-4 xs:p-5 sm:p-6 md:p-7 lg:p-8    // レスポンシブパディング
+          text-lg xs:text-xl sm:text-2xl md:text-3xl lg:text-4xl    // レスポンシブフォントサイズ
+          font-medium
+          ${labelColor === "white" 
+            ? "text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.8)] drop-shadow-[0_0_20px_rgba(255,255,255,0.6)] drop-shadow-[0_0_30px_rgba(255,255,255,0.4)]"
+            : "text-black drop-shadow-[0_0_10px_rgba(0,0,0,0.3)] drop-shadow-[0_0_20px_rgba(0,0,0,0.2)]"
+          }
+        `}>
           {children}
-        </Box>
+        </div>
       </div>
     </div>
   );

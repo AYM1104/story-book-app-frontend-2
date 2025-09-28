@@ -34,43 +34,34 @@ export default function Header({
 
   return (
     <header
-      className={className}
+      className={`sticky top-0 left-0 right-0 z-50 overflow-visible text-white ${className}`}
       style={{
-        position: "sticky",
-        top: 0,
-        left: 0,
-        right: 0,
-        height: 64,
-        zIndex: 50,
+        // レスポンシブな高さ設定
+        height: "clamp(48px, 8vw, 64px)",
         // 透過グラデーション背景（backdrop なし）
         background: "linear-gradient(180deg, rgba(2,6,23,0.65) 0%, rgba(2,6,23,0.45) 100%)",
         borderBottom: "none",
         boxShadow: "0 6px 28px rgba(0,0,0,0.55)",
-        overflow: "visible",
         backdropFilter: undefined,
       }}
     >
-      <div
-        style={{
-          maxWidth: 1200,
-          margin: "0 auto",
-          height: "100%",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: "0 16px",
-          color: "white",
-        }}
-      >
+      <div className="w-full h-full flex items-center justify-between px-4 sm:px-6 md:px-8">
         {/* 左：ロゴ + タイトル */}
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <Link href="/" style={{ display: "inline-flex", alignItems: "center" }}>
-            <Image src={logoSrc} alt={logoAlt} width={32} height={32} priority />
+        <div className="flex items-center gap-2 sm:gap-3">
+          <Link href="/" className="inline-flex items-center">
+            <Image 
+              src={logoSrc} 
+              alt={logoAlt} 
+              width={24} 
+              height={24} 
+              className="w-[24px] h-[24px] sm:w-[32px] sm:h-[32px] md:w-[40px] md:h-[40px] lg:w-[48px] lg:h-[48px]" 
+              priority 
+            />
           </Link>
           {title ? (
             <span
+              className="font-bold text-[14px] sm:text-[16px] md:text-[18px] lg:text-[20px] xl:text-[22px]"
               style={{
-                fontWeight: 700,
                 letterSpacing: 0.2,
                 background: "linear-gradient(45deg, #ffffff 30%, #e0e7ff 90%)",
                 WebkitBackgroundClip: "text",
@@ -83,9 +74,9 @@ export default function Header({
           ) : null}
         </div>
 
-        {/* 右：ナビ（狭幅では非表示にする想定。必要なら後で隠すCSSを追加） */}
-        <nav aria-label="メインナビゲーション">
-          <ul style={{ display: "flex", alignItems: "center", gap: 16, listStyle: "none", margin: 0, padding: 0 }}>
+        {/* 右：ナビ（レスポンシブ対応） */}
+        <nav aria-label="メインナビゲーション" className="hidden sm:block">
+          <ul className="flex items-center gap-2 md:gap-4 list-none m-0 p-0">
             {navItems.map((item, idx) => {
               const key = `${item.label}-${idx}`;
               if (item.href) {
@@ -93,14 +84,7 @@ export default function Header({
                   <li key={key}>
                     <Link
                       href={item.href}
-                      style={{
-                        color: "rgba(255,255,255,0.9)",
-                        textDecoration: "none",
-                        fontWeight: 600,
-                        padding: "8px 10px",
-                        borderRadius: 8,
-                        transition: "background 0.2s ease, transform 0.2s ease",
-                      }}
+                      className="text-white/90 no-underline font-semibold px-2 py-1 md:px-3 md:py-2 rounded-lg text-sm md:text-base transition-all duration-200 hover:bg-white/10 hover:scale-105"
                     >
                       {item.label}
                     </Link>
@@ -112,16 +96,7 @@ export default function Header({
                   <button
                     type="button"
                     onClick={item.onClick}
-                    style={{
-                      color: "rgba(255,255,255,0.9)",
-                      fontWeight: 600,
-                      padding: "8px 10px",
-                      borderRadius: 8,
-                      background: "transparent",
-                      border: "1px solid rgba(255,255,255,0.18)",
-                      cursor: "pointer",
-                      transition: "background 0.2s ease, transform 0.2s ease",
-                    }}
+                    className="text-white/90 font-semibold px-2 py-1 md:px-3 md:py-2 rounded-lg bg-transparent border border-white/18 cursor-pointer text-sm md:text-base transition-all duration-200 hover:bg-white/10 hover:scale-105"
                   >
                     {item.label}
                   </button>
@@ -134,17 +109,11 @@ export default function Header({
       {/* 下方向のぼかしグロー（装飾） */}
       <div
         aria-hidden
+        className="absolute left-0 right-0 bottom-[-14px] h-7 opacity-90 pointer-events-none"
         style={{
-          position: "absolute",
-          left: 0,
-          right: 0,
-          bottom: -14,
-          height: 28,
           // 下に向かうフェード
           background: "linear-gradient(180deg, rgba(80,102,204,0.45) 0%, rgba(80,102,204,0.25) 40%, rgba(80,102,204,0) 100%)",
           filter: "blur(14px)",
-          opacity: 0.9,
-          pointerEvents: "none",
           transform: "translateZ(0)",
         }}
       />

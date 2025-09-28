@@ -1,10 +1,10 @@
 "use client"
 import BackgroundStars from '../../components/BackgroundStars'
 import Header from "@/components/Header"
-import Character from "@/components/Character"
-import Button from "@/components/button/Button";
+import Character from "@/components/Character/Character"
+import Button from '@/components/Button/Button';
 import Card from "@/components/Card/Card";
-import styles from "./Home.module.css";
+import HeadingText from "@/components/HeadingText/HeadingText";
 import { useRouter } from "next/navigation";
 
 export default function Page() {
@@ -14,30 +14,78 @@ export default function Page() {
       <Header />
 
       {/* 見出し */}
-      <div className="flex justify-center text-center">
-        <p className={`${styles.desc} relative z-10`}>
-          きょうは
-          <br className={styles.mobileBreak} />
-          どんなえほんのせかいへ？
-        </p>
+      <div className="flex justify-center text-center mt-2 md:mt-8 lg:mt-1">
+        <div className="relative z-10">
+          <HeadingText>
+            きょうは
+            <br className="md:hidden" />
+            どんな えほんのせかい へいく？
+          </HeadingText>
+        </div>
       </div>
 
       {/* ボタン */}
       <div className="flex justify-center">
-        <Button width={280} className="relative -mt-2 z-10" onClick={() => router.push("/upload-image")}>
-          えほんをつくる
-        </Button>
+        <div className="relative z-10">
+          <Button onClick={() => router.push("/upload-image")}>        
+            えほんをつくる
+          </Button>
+        </div>
       </div>
 
       {/* カード */}
       <div className="flex justify-center">
-        <Card height="400px" offsetY={70}>かこにつくったえほん</Card>
+        <Card>かこにつくったえほん</Card>
       </div>
 
       {/* キャラクター */}
-      <div className="min-h-screen flex items-center justify-center pb-48 md:pb-56">
-        <Character className="fixed left-1/2 bottom-0 -translate-x-1/2 pb-8 z-0" />
-      </div>
+      <Character bottomAligned={true} useContainerStyle={true} />
     </BackgroundStars>
   )
 }
+
+
+// "use client"
+// import BackgroundStars from '../../components/BackgroundStars'
+// import Header from "@/components/Header"
+// import Character from "@/components/Character/Character"
+// import Button from "@/components/Button/Button";
+// import Card from "@/components/Card/Card";
+// import styles from "./Home.module.css";
+// import { useRouter } from "next/navigation";
+
+// export default function Page() {
+//   const router = useRouter();
+//   return (
+//     <BackgroundStars>
+//       <Header />
+
+//       {/* 見出し */}
+//       <div className="flex justify-center text-center mt-2">
+//         <p className={`${styles.desc} relative z-10`}>
+//           きょうは
+//           <br className={styles.mobileBreak} />
+//           どんなえほんのせかいへ？
+//         </p>
+//       </div>
+
+//       {/* ボタン */}
+//       <div className="flex justify-center">
+//         <Button width={280} className="relative -mt-2 z-10" onClick={() => router.push("/upload-image")}>
+//           えほんをつくる
+//         </Button>
+//       </div>
+
+//       {/* カード */}
+//       <div className="flex justify-center">
+//         <Card height="400px" offsetY={70}>かこにつくったえほん</Card>
+//       </div>
+
+//       {/* キャラクター */}
+//       {/* キャラクター */}
+//       <div className={styles.characterContainer}>
+//         <Character bottomAligned={true} />
+//       </div>
+//     </BackgroundStars>
+//   )
+// }

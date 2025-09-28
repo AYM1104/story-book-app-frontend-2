@@ -4,7 +4,7 @@ import { useParams } from 'next/navigation'
 import BackgroundStars from '../../../components/BackgroundStars'
 import Header from "@/components/Header"
 import Card from "@/components/Card/Card"
-import Button from "@/components/button/Button"
+import Button from "@/components/Button/Button"
 
 // 絵本データの型定義
 interface StoryBook {

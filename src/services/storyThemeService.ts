@@ -45,7 +45,8 @@ interface StorybookImageUrlUpdateResponse {
 export async function generateStoryPlotImages(
   storyPlotId: number,
   strength: number = 0.8,
-  prefix: string = "storyplot_i2i_all"
+  prefix: string = "storyplot_i2i_all",
+  referenceImagePath?: string
 ): Promise<ImageGenerationResponse> {
   const response = await fetch('http://localhost:8000/images/generation/generate-storyplot-all-pages-image-to-image', {
     method: 'POST',
@@ -55,7 +56,9 @@ export async function generateStoryPlotImages(
     body: JSON.stringify({
       story_plot_id: storyPlotId,
       strength,
-      prefix
+      prefix,
+      // backend側は未指定の場合に自動解決するが、ここで明示指定すると確実
+      reference_image_path: referenceImagePath
     })
   });
 
@@ -124,8 +127,15 @@ export async function handleSelectTheme(currentTheme: TitleItem): Promise<number
   const themeKey = currentTheme.selected_theme ?? currentTheme.title;
   const { storybook_id } = await confirmThemeAndCreate(currentTheme.story_plot_id, themeKey);
 
-  // 2) 画像生成（全ページ i2i 生成）
-  const result: any = await generateStoryPlotImages(currentTheme.story_plot_id);
+  // 2) 画像生成（全ページ i2i 生成）: アップロード画像の参照パスを明示指定
+  let referencePath: string | undefined = undefined;
+  try {
+    const stored = typeof window !== 'undefined' ? localStorage.getItem('uploaded_image_path') : null;
+    if (stored && stored.trim().length > 0) {
+      referencePath = stored;
+    }
+  } catch {}
+  const result: any = await generateStoryPlotImages(currentTheme.story_plot_id, 0.8, 'storyplot_i2i_all', referencePath);
 
   // 3) 生成結果を page_n_image_url に割り当てて更新
   //    - backendはURL想定だが、現状はローカルのファイルパスをそのまま保存

@@ -34,12 +34,64 @@
     display: none; /* PC等の広い画面では非表示 */
   }
   
-  /* 画面幅が 599px 以下（スマホ想定）のときの最適化 */
+  /* キャラクター配置のスタイル */
+  .characterContainer {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 12rem; /* pb-48 */
+  }
+
+  .character {
+    position: fixed;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    padding-bottom: 2rem; /* pb-8 */
+    z-index: 0;
+  }
+
+  /* ============================================
+     タブレットサイズ（768px〜1024px）の設定
+     ============================================ */
+  @media (min-width: 768px) and (max-width: 1024px) {
+    /* キャラクター：タブレット用の下部余白を調整 */
+    .characterContainer {
+      padding-bottom: 0rem;
+    }
+  }
+
+  /* ============================================
+     スマホサイズ（599px以下）の設定
+     ============================================ */
   @media (max-width: 599px) {
+    /* 見出しテキスト：スマホ用の文字サイズ */
     .desc {
-      font-size: 22px;    /* 画面幅に合わせて少し小さめの文字に調整 */
+      font-size: 22px;
     }
+    
+    /* 改行要素：スマホ時のみ表示 */
     .mobileBreak {
-      display: inline;    /* スマホ時のみ有効にして行区切り等に活用 */
+      display: inline;
     }
+    
+    /* キャラクター：スマホ用の配置調整 */
+    .characterContainer {
+      padding-bottom: 10rem;
+    }
+    .character {
+      padding-bottom: 1rem;
+    }
+  }
+
+  /* ============================================
+     PCサイズ（1025px以上）の設定
+     ============================================ */
+  @media (min-width: 1025px) {
+    /* PCでは基本的にデフォルト値を使用
+       - .desc: font-size: 28px
+       - .characterContainer: padding-bottom: 12rem
+       - .character: padding-bottom: 2rem
+    */
   }

@@ -1,0 +1,106 @@
+/* SVGを画面フルサイズにして中央配置 */
+.character {
+  width: 100vw;
+  height: 25vh;
+  display: block;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  overflow: visible; /* 画面外から入ってくる時のはみ出し可 */
+  z-index: 20; /* カードより上に表示 */
+}
+
+.leftLeg, .rightLeg {
+  transform-box: fill-box;   /* transform-origin をパス基準にする */
+  transform-origin: 50% 0%;  /* 足の上を回転の基点にする */
+}
+
+/* 左足を前後に振る */
+.leftLeg {
+  animation: walkLeft 1s infinite alternate ease-in-out;
+  animation-play-state: var(--play, running);
+}
+
+/* 右足を前後に振る */
+.rightLeg {
+  animation: walkRight 1s infinite alternate ease-in-out;
+  animation-play-state: var(--play, running);
+}
+
+/* 左足 */
+@keyframes walkLeft {
+  0%   { transform: rotate(20deg); }
+  100% { transform: rotate(-20deg); }
+}
+
+/* 右足（逆位相で動く） */
+@keyframes walkRight {
+  0%   { transform: rotate(-20deg); }
+  100% { transform: rotate(20deg); }
+}
+
+/* 体+角の上下ゆれ（共通ラッパ） */
+#torso {
+  animation: bob 1s infinite ease-in-out;
+  animation-play-state: var(--play, running);
+}
+
+@keyframes bob {
+  0%, 100% { transform: translate(10px,55px) translateY(0); }
+  50%      { transform: translate(10px,55px) translateY(6px); }
+}
+
+/* 角だけのプルプル回転（少し遅延させると可愛い） */
+#antler {
+  transform-box: fill-box;
+  transform-origin: 20% 100%;     /* 角の根本あたりを軸に（要微調整） */
+  animation: wiggle 1s infinite ease-in-out .05s;
+  animation-play-state: var(--play, running);
+}
+
+@keyframes wiggle {
+  0%,100% { transform: rotate(-6deg); }
+  50%     { transform: rotate(6deg);  }
+}
+
+/* 黒目は自分の中心基準で動かす */
+#left-eye-black, #right-eye-black {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+}
+
+/* 右を見る */
+.lookUpThenRight {
+  animation: eyeUpThenRight 4s infinite ease-in-out;
+  animation-play-state: var(--play, running);
+}
+
+@keyframes eyeUpThenRight {
+  0%   { transform: translate(0, 0); }
+  25%  { transform: translate(0, -10px); }   /* 上 */
+  50%  { transform: translate(10px, -10px); }/* 右上 */
+  75%  { transform: translate(18px, 0); }    /* ← 右に寄せる強め */
+  100% { transform: translate(0, 0); }       /* 正面に戻る */
+}
+
+/* 横移動（本体ラッパ） */
+.characterRoot {
+  animation: walkMove var(--speed, 25s) linear infinite; /* 速度は変数 */
+  animation-play-state: var(--play, running); /* 再生/停止は --play で一括制御 */
+}
+
+@keyframes walkMove {
+  0%   { transform: translateX(80vw); }   /* 画面右外から開始 */
+  100% { transform: translateX(-220vw); }  /* 左に十分抜けるまで移動 */
+}
+
+/* 複数体のディレイ（重なり回避） */
+.char:nth-of-type(2) .characterRoot { animation-delay: .6s; }
+.char:nth-of-type(3) .characterRoot { animation-delay: 1.2s; }
+.char:nth-of-type(4) .characterRoot { animation-delay: 1.8s; }
+
+/* ── 色指定は <use fill> から直接渡す前提 ── */
+.char .fillBody { fill: inherit; }
+
+/* クリック停止用：.char に paused が付いたら --play を停止に */
+.char.paused { --play: paused; }
