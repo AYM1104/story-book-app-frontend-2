@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { StoryPlotItem } from '../lib/types';
 
 interface TitleItem {
   story_plot_id: number;
@@ -62,7 +63,7 @@ export default function useStoryTheme(): UseStoryThemeReturn {
         
         const data = await res.json();
         const items = Array.isArray(data?.items) ? data.items : [];
-        const formattedItems = items.map((it: any) => ({
+        const formattedItems = items.map((it: StoryPlotItem) => ({
           story_plot_id: it.story_plot_id,
           title: it.title ?? '',
           description: it.description ?? '',

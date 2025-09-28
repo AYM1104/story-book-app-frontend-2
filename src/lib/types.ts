@@ -43,3 +43,23 @@ export type BooksResponse = z.infer<typeof BooksResponseSchema>;
 export interface ApiError {
   error: string;
 }
+
+// ストーリープロットアイテムの型
+export interface StoryPlotItem {
+  story_plot_id: number;
+  title: string;
+  description?: string;
+  selected_theme?: string;
+}
+
+// 画像生成レスポンスの型
+export interface ImageGenerationResult {
+  total_generated: number;
+  images?: GeneratedImage[];
+}
+
+// 生成された画像の型
+export interface GeneratedImage {
+  page_number: number;
+  filepath: string;
+}

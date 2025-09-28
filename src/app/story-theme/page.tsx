@@ -8,7 +8,7 @@ import ThemeInnerCard from "@/components/Card/ThemeInnerCard"
 import useStoryTheme from "@/hooks/useStoryTheme"
 import { handleSelectTheme } from "@/services/storyThemeService"
 import HeadingText from "@/components/HeadingText/HeadingText";
-import Button from "@/components/Button/Button";
+import Button from "@/components/Button/Button";  
 
 export default function Page() {
   const [isGeneratingImages, setIsGeneratingImages] = useState(false)

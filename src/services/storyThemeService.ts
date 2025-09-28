@@ -1,9 +1,4 @@
-interface TitleItem {
-  story_plot_id: number;
-  title: string;
-  description?: string;
-  selected_theme?: string;
-}
+import { StoryPlotItem as TitleItem, ImageGenerationResult, GeneratedImage } from '../lib/types';
 
 interface ImageGenerationResponse {
   total_generated: number;
@@ -135,14 +130,14 @@ export async function handleSelectTheme(currentTheme: TitleItem): Promise<number
       referencePath = stored;
     }
   } catch {}
-  const result: any = await generateStoryPlotImages(currentTheme.story_plot_id, 0.8, 'storyplot_i2i_all', referencePath);
+  const result: ImageGenerationResult = await generateStoryPlotImages(currentTheme.story_plot_id, 0.8, 'storyplot_i2i_all', referencePath);
 
   // 3) 生成結果を page_n_image_url に割り当てて更新
   //    - backendはURL想定だが、現状はローカルのファイルパスをそのまま保存
   if (Array.isArray(result?.images) && result.images.length > 0) {
     // page_number でソートし、対応するpage_nに入れる
     const byPage = new Map<number, string>();
-    result.images.forEach((img: any) => {
+    result.images.forEach((img: GeneratedImage) => {
       if (typeof img?.page_number === 'number' && typeof img?.filepath === 'string') {
         byPage.set(img.page_number, img.filepath);
       }
