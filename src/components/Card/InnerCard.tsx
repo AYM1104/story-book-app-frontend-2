@@ -48,22 +48,13 @@ export default function InnerCard({
           しつもんをよみこみちゅう...
         </div>
       ) : (
-        <div className="flex h-full flex-col justify-between">
+        <div className="flex h-full flex-col justify-center">
           <div className="mt-2 xs:mt-3 sm:mt-4 md:mt-5 lg:mt-6">
             <QuestionInput
               question={questions[currentIndex]}
               value={currentAnswer}
               onChange={onAnswerChange}
             />
-          </div>
-
-          {/* ナビゲーションも内側Cardに配置 */}
-          <div className="mt-3 xs:mt-4 sm:mt-5 md:mt-6 lg:mt-7 flex flex-col xs:flex-row items-center justify-between gap-2 xs:gap-3 sm:gap-4 md:gap-5 lg:gap-6">
-            <Button width={100} onClick={onPrev}>まえへ</Button>
-            <ProgressDots total={questions.length} currentIndex={currentIndex} />
-            <Button width={100} onClick={onNext} disabled={isSubmitting || isCompleted}>
-              {isSubmitting ? 'ほぞん中...' : (currentIndex === questions.length - 1 ? 'おわり' : 'つぎへ')}
-            </Button>
           </div>
         </div>
       )}

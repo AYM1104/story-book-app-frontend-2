@@ -57,7 +57,7 @@ export default function Page() {
       </div>
 
       {/* カード */}
-      <div className="flex justify-center">
+      <div className="fixed bottom-[calc(env(safe-area-inset-bottom)+24px)] left-0 right-0 flex justify-center px-2 xs:px-4 sm:px-6 md:px-8 lg:px-10 z-50">
         <Card>
         {publicImageUrl ? (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>

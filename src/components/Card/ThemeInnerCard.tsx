@@ -1,6 +1,7 @@
 "use client";
 import React from 'react';
 import TitleSlider from '../TitleSlider';
+import Button from '../Button/Button';
 
 interface TitleItem {
   story_plot_id: number;
@@ -11,8 +12,6 @@ interface TitleItem {
 interface ThemeInnerCardProps {
   titles: TitleItem[];
   currentIndex: number;
-  onPrevious: () => void;
-  onNext: () => void;
   onSelectTheme: () => void;
   isGeneratingImages: boolean;
   error?: string | null;
@@ -25,8 +24,6 @@ interface ThemeInnerCardProps {
 export default function ThemeInnerCard({
   titles,
   currentIndex,
-  onPrevious,
-  onNext,
   onSelectTheme,
   isGeneratingImages,
   error
@@ -39,16 +36,26 @@ export default function ThemeInnerCard({
       {error ? (
         <div className="text-center text-red-600">エラー: {error}</div>
       ) : (
-        <div className="flex h-full flex-col justify-between">
-          <div className="mt-2 xs:mt-3 sm:mt-4 md:mt-5 lg:mt-6">
-            <TitleSlider
-              titles={titles}
-              currentIndex={currentIndex}
-              onPrevious={onPrevious}
-              onNext={onNext}
-              onSelectTheme={onSelectTheme}
-              isGeneratingImages={isGeneratingImages}
-            />
+        <div className="flex h-full flex-col justify-center items-center">
+          {/* タイトル表示 */}
+          <div className="text-center text-lg font-bold text-gray-800 mb-2">
+            {titles.length > 0 ? titles[currentIndex]?.title || 'テーマ' : 'テーマ'}
+          </div>
+          
+          <TitleSlider
+            titles={titles}
+            currentIndex={currentIndex}
+          />
+          
+          {/* テーマ選択ボタン */}
+          <div className="mt-4">
+            <Button 
+              width={250} 
+              onClick={onSelectTheme}
+              disabled={isGeneratingImages || titles.length === 0}
+            >
+              {isGeneratingImages ? '画像生成中...' : 'このテーマを選択'}
+            </Button>
           </div>
         </div>
       )}

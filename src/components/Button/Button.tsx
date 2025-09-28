@@ -18,7 +18,7 @@ export default function Button({ children, disabled, className, onClick, width }
         mt-6 xs:mt-7 sm:mt-9 md:mt-12 lg:mt-13 xl:mt-2     // レスポンシブ_マージン
         text-lg md:text-xl lg:text-2xl xl:text-xl         // フォントサイズ
         font-semibold                     // フォントウェイト
-        rounded-3xl                      // 角丸
+        rounded-full                     // 完全に丸い
         bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-500 text-white  // 目立つエメラルド・ティールグラデーション
         shadow-lg hover:shadow-2xl       // より強いシャドウ効果
         shadow-emerald-400/50            // エメラルドの光るシャドウ

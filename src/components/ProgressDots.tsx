@@ -11,7 +11,7 @@ type Props = {
 export default function ProgressDots({ total, currentIndex }: Props) {
   if (total <= 0) return null
   return (
-    <div className="flex gap-1">
+    <div className="flex gap-1 items-center justify-center h-10">
       {Array.from({ length: total }).map((_, i) => (
         <span
           key={i}
