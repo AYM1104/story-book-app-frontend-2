@@ -11,37 +11,37 @@ export default function Page() {
   const router = useRouter();
   return (
     <BackgroundStars>
-      <div className="min-h-screen flex flex-col safe-area-inset-all">
+      <main className="min-h-[100dvh] flex flex-col safe-area-inset-all">
         <Header />
 
-      {/* 見出し */}
-      <div className="flex justify-center text-center mt-2 md:mt-8 lg:mt-1">
-        <div className="relative z-10">
-          <HeadingText>
-            きょうは
-            <br className="md:hidden" />
-            どんな えほんのせかい へいく？
-          </HeadingText>
+        {/* 見出し */}
+        <div className="flex justify-center text-center mt-2 md:mt-8 lg:mt-1">
+          <div className="relative z-10">
+            <HeadingText>
+              きょうは
+              <br className="md:hidden" />
+              どんな えほんのせかい へいく？
+            </HeadingText>
+          </div>
         </div>
-      </div>
 
-      {/* ボタン */}
-      <div className="flex justify-center">
-        <div className="relative z-10">
-          <Button onClick={() => router.push("/upload-image")}>        
-            えほんをつくる
-          </Button>
+        {/* ボタン */}
+        <div className="flex justify-center">
+          <div className="relative z-10">
+            <Button onClick={() => router.push("/upload-image")}>        
+              えほんをつくる
+            </Button>
+          </div>
         </div>
-      </div>
 
-      {/* カード */}
-      <div className="flex justify-center">
-        <Card>かこにつくったえほん</Card>
-      </div>
+        {/* キャラクター */}
+        <Character bottomAligned={true} useContainerStyle={true} />
 
-      {/* キャラクター */}
-      <Character bottomAligned={true} useContainerStyle={true} />
-      </div>
+        {/* カード - 下固定 */}
+        <div className="fixed bottom-[calc(env(safe-area-inset-bottom)+24px)] left-0 right-0 flex justify-center px-2 xs:px-4 sm:px-6 md:px-8 lg:px-10 z-50">
+          <Card>かこにつくったえほん</Card>
+        </div>
+      </main>
     </BackgroundStars>
   )
 }
