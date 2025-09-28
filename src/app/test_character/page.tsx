@@ -1,14 +1,11 @@
-"use client"
 import BackgroundStars from '../../components/BackgroundStars'
 import Header from "@/components/Header"
 import Character from "@/components/Character/Character"
 import Button from '@/components/Button/Button';
 import Card from "@/components/Card/Card";
 import HeadingText from "@/components/HeadingText/HeadingText";
-import { useRouter } from "next/navigation";
 
 export default function Page() {
-  const router = useRouter();
   return (
     <BackgroundStars>
       <Header />

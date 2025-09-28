@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { BookSummary, BooksResponse, BooksResponseSchema } from '@/lib/types';
+import { BooksResponseSchema } from '@/lib/types';
 
 // 絵本一覧の型定義
 // 型定義は @/lib/types から import 済み

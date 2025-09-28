@@ -1,16 +1,13 @@
-"use client"
 import BackgroundStars from '../../components/BackgroundStars'
 import Header from "@/components/Header"
 import Character from "@/components/Character/Character"
 import Button from '@/components/Button/Button';
 import Card from "@/components/Card/Card";
 import HeadingText from "@/components/HeadingText/HeadingText";
-import { useRouter } from "next/navigation";
 import { useRef } from 'react';
 import useImageUpload from '@/hooks/useImageUpload';
 
 export default function Page() {
-  const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement | null>(null)
 
   // 画像アップロードフック

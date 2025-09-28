@@ -13,12 +13,10 @@ import Button from "@/components/Button/Button";
 export default function Page() {
   const [isGeneratingImages, setIsGeneratingImages] = useState(false)
   const {
-    storySettingId,
     latestTitles,
     titleSlideIndex,
     prevTitle,
     nextTitle,
-    isLoading,
     error
   } = useStoryTheme()
 

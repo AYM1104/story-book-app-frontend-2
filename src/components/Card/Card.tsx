@@ -21,12 +21,6 @@ export default function Card({
   labelColor = "white",
   width = "medium"
 }: CardProps) {
-  const [isVisible, setIsVisible] = useState(true);
-
-  useEffect(() => {
-    // ページロード時にアニメーション開始（アニメーションなしで即座に表示）
-    setIsVisible(true);
-  }, []);
 
   const translateY = offsetY !== undefined ? (typeof offsetY === "number" ? `${offsetY}px` : offsetY) : undefined;
 

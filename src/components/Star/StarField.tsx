@@ -1,5 +1,5 @@
 // 星データの型（座標・サイズ・回転・アニメーション時間など）
-import { starImages, Star, BASE_DENSITY } from "./starType";   
+import { Star } from "./starType";   
 
 // StarLayer コンポーネントの props 型
 interface StarLayerProps {

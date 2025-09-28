@@ -1,14 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { BookDetail, BookDetailSchema } from '@/lib/types';
+import { BookDetailSchema } from '@/lib/types';
 
 // TODO: 実際のDBから取得するように修正
 // 現在はモックデータを返す
 export async function GET(
   request: NextRequest,
-  { params }: { params: { bookId: string } }
+  { params }: { params: Promise<{ bookId: string }> }
 ) {
   try {
-    const bookId = parseInt(params.bookId);
+    const { bookId: bookIdParam } = await params;
+    const bookId = parseInt(bookIdParam);
 
     if (isNaN(bookId)) {
       return NextResponse.json(
