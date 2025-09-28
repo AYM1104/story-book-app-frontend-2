@@ -75,7 +75,9 @@ export default function Card({
       {/* ガラス風のコンテンツエリア */}
       <div className={`
         relative z-10 h-full flex flex-col items-center justify-start
-        p-4 xs:p-5 sm:p-6 md:p-7 lg:p-8    // レスポンシブパディング
+        pt-8 xs:pt-10 sm:pt-12 md:pt-14 lg:pt-16    // 上部に少し余白を追加
+        px-4 xs:px-5 sm:px-6 md:px-7 lg:px-8    // 左右のパディング
+        pb-4 xs:pb-5 sm:pb-6 md:pb-7 lg:pb-8    // 下部のパディング
         text-lg xs:text-xl sm:text-2xl md:text-3xl lg:text-4xl    // レスポンシブフォントサイズ
         font-medium
         ${labelColor === "white" 
