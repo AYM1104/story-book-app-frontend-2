@@ -20,28 +20,28 @@ export default function BookDetailPage({ params }: BookPageProps) {
   const router = useRouter();
 
   useEffect(() => {
+    const fetchBook = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(`/api/books/${bookId}`);
+        
+        if (!response.ok) {
+          throw new Error('絵本の詳細取得に失敗しました');
+        }
+        
+        const data: BookDetail = await response.json();
+        setBook(data);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'エラーが発生しました');
+      } finally {
+        setLoading(false);
+      }
+    };
+
     if (bookId) {
       fetchBook();
     }
   }, [bookId]);
-
-  const fetchBook = async () => {
-    try {
-      setLoading(true);
-      const response = await fetch(`/api/books/${bookId}`);
-      
-      if (!response.ok) {
-        throw new Error('絵本の詳細取得に失敗しました');
-      }
-      
-      const data: BookDetail = await response.json();
-      setBook(data);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'エラーが発生しました');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const scrollToPage = (pageIndex: number) => {
     if (scrollContainerRef.current) {

@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, ReactNode } from "react";
+import { ReactNode } from "react";
 
 interface CardProps {
   children: ReactNode;
@@ -11,6 +11,10 @@ interface CardProps {
   labelColor?: string;
   /** カードの横幅サイズ ('small' | 'medium' | 'large' | 'full') */
   width?: 'small' | 'medium' | 'large' | 'full';
+  /** カードの高さ */
+  height?: string | number;
+  /** カードの最大幅 */
+  maxWidth?: string | number;
 }
 
 export default function Card({ 
@@ -19,7 +23,9 @@ export default function Card({
   className,
   style,
   labelColor = "white",
-  width = "medium"
+  width = "medium",
+  height,
+  maxWidth
 }: CardProps) {
 
   const translateY = offsetY !== undefined ? (typeof offsetY === "number" ? `${offsetY}px` : offsetY) : undefined;
@@ -68,7 +74,11 @@ export default function Card({
           
           ${className || ''}
         `}
-        style={style}
+        style={{
+          ...style,
+          ...(height && { height: typeof height === 'number' ? `${height}px` : height }),
+          ...(maxWidth && { maxWidth: typeof maxWidth === 'number' ? `${maxWidth}px` : maxWidth })
+        }}
       >
         {/* ガラス風の内側ハイライト */}
         <div className="absolute inset-0 bg-gradient-to-b from-white/8 via-white/2 to-white/5 rounded-2xl pointer-events-none" />
