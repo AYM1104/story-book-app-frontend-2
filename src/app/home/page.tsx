@@ -11,7 +11,8 @@ export default function Page() {
   const router = useRouter();
   return (
     <BackgroundStars>
-      <Header />
+      <div className="min-h-screen flex flex-col safe-area-inset-all">
+        <Header />
 
       {/* 見出し */}
       <div className="flex justify-center text-center mt-2 md:mt-8 lg:mt-1">
@@ -40,6 +41,7 @@ export default function Page() {
 
       {/* キャラクター */}
       <Character bottomAligned={true} useContainerStyle={true} />
+      </div>
     </BackgroundStars>
   )
 }

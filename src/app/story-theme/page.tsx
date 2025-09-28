@@ -42,7 +42,7 @@ export default function Page() {
 
   return (
     <BackgroundStars>
-      <div className="min-h-screen flex flex-col">
+      <div className="min-h-screen flex flex-col safe-area-inset-all">
         <Header />
 
         {/* 見出し */}

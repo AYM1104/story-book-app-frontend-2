@@ -94,7 +94,7 @@ export default function StoryBookPage() {
   if (loading) {
     return (
       <BackgroundStars>
-        <div className="min-h-screen flex flex-col">
+        <div className="min-h-screen flex flex-col safe-area-inset-all">
           <Header />
           <div className="flex-1 flex items-center justify-center">
             <Card height="400px" maxWidth="600px">
@@ -115,7 +115,7 @@ export default function StoryBookPage() {
   if (error) {
     return (
       <BackgroundStars>
-        <div className="min-h-screen flex flex-col">
+        <div className="min-h-screen flex flex-col safe-area-inset-all">
           <Header />
           <div className="flex-1 flex items-center justify-center">
             <Card height="400px" maxWidth="600px">
@@ -142,7 +142,7 @@ export default function StoryBookPage() {
   if (!storybook) {
     return (
       <BackgroundStars>
-        <div className="min-h-screen flex flex-col">
+        <div className="min-h-screen flex flex-col safe-area-inset-all">
           <Header />
           <div className="flex-1 flex items-center justify-center">
             <Card height="400px" maxWidth="600px">
