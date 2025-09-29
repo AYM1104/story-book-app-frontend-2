@@ -15,7 +15,7 @@ export default function Button({ children, disabled, className, onClick, width }
       style={{ width: width ? `${width}px` : undefined }}
       className={`
         pt-1 pb-2 px-4 xs:px-7 sm:px-10 md:px-12 lg:px-15    // レスポンシブパディング
-        mt-6 xs:mt-7 sm:mt-9 md:mt-12 lg:mt-13 xl:mt-2     // レスポンシブ_マージン
+        mt-5 xs:mt-7 sm:mt-9 md:mt-12 lg:mt-13 xl:mt-2     // レスポンシブ_マージン
         text-lg md:text-xl lg:text-2xl xl:text-xl         // フォントサイズ
         font-semibold                     // フォントウェイト
         rounded-full                     // 完全に丸い

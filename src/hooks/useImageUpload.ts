@@ -21,7 +21,13 @@ export function useImageUpload() {
   // 公開用URLへ変換
   const publicImageUrl = useMemo(() => {
     if (!uploadedImagePath) return null
-    // バックスラッシュをスラッシュへ統一し、末尾のファイル名から公開URLを組み立て
+    
+    // GCSの公開URLが返されている場合はそのまま使用
+    if (uploadedImagePath.startsWith('http')) {
+      return uploadedImagePath
+    }
+    
+    // ローカルファイルの場合は従来の処理
     const parts = uploadedImagePath.replace(/\\/g, '/').split('/')
     const filename = parts[parts.length - 1]
     return `http://localhost:8000/uploads/${filename}`
@@ -50,11 +56,12 @@ export function useImageUpload() {
         throw new Error(msg || 'Upload failed')
       }
       const data = await res.json()
-      const filePath = data?.file_path ?? null
-      setUploadedImagePath(filePath)
+      // GCSの場合はpublic_urlを優先、なければfile_pathを使用
+      const imagePath = data?.public_url ?? data?.file_path ?? null
+      setUploadedImagePath(imagePath)
       try {
-        if (filePath) {
-          localStorage.setItem('uploaded_image_path', filePath)
+        if (imagePath) {
+          localStorage.setItem('uploaded_image_path', imagePath)
         }
         if (typeof data?.id === 'number') {
           localStorage.setItem('uploaded_image_id', String(data.id))

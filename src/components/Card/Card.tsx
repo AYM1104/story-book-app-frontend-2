@@ -51,7 +51,7 @@ export default function Card({
       className={`
         w-full
         ${getWidthClasses()}    // 動的なレスポンシブ最大幅
-        h-96 xs:h-[20rem] sm:h-[24rem] md:h-[28rem] lg:h-[36rem]   // レスポンシブ高さ
+        h-[19rem] xs:h-[20rem] sm:h-[24rem] md:h-[28rem] lg:h-[36rem]   // レスポンシブ高さ
         text-center relative overflow-hidden
         
         // ガラス風の透明効果

@@ -14,7 +14,7 @@ export default function Character({ className, bottomAligned = false, useContain
 
   // キャラクターのサイズ
   const baseClasses = 
-    "w-[380px] xs:w-[400px] sm:w-[430px] md:w-[600px] lg:w-[750px] xl:w-[350px] max-w-none h-auto select-none pointer-events-none";
+    "w-[350px] xs:w-[400px] sm:w-[430px] md:w-[600px] lg:w-[750px] xl:w-[350px] max-w-none h-auto select-none pointer-events-none";
   
   // 画面下部基準の配置クラス
   const bottomAlignmentClasses = bottomAligned 

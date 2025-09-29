@@ -4,8 +4,8 @@
 
 /* Tailwind CSS v4のカスタムテーマ設定 */
 @theme {
-  --breakpoint-xs: 350px;
-  --breakpoint-sm: 400px;
+  --breakpoint-xs: 370px;  /* iphone11pro対応 */
+  --breakpoint-sm: 400px;  /* iphone16pro対応 */
   --breakpoint-md: 750px;
   --breakpoint-lg: 1000px;
   --breakpoint-xl: 1200px;
