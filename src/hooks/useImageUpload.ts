@@ -51,7 +51,7 @@ export function useImageUpload() {
 
     setIsUploading(true)
     try {
-      console.log('アップロイドを開始...', file.name)
+      console.log('アップロードを開始...', file.name)
       
       const res = await fetch('http://localhost:8000/images/upload', {
         method: 'POST',

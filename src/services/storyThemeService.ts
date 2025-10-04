@@ -39,7 +39,7 @@ interface StorybookImageUrlUpdateResponse {
  */
 export async function generateStoryPlotImages(
   storyPlotId: number,
-  strength: number = 0.8,
+  strength: number = 1.0,
   prefix: string = "storyplot_i2i_all",
   referenceImagePath?: string
 ): Promise<ImageGenerationResponse> {
@@ -130,7 +130,7 @@ export async function handleSelectTheme(currentTheme: TitleItem): Promise<{ tota
       referencePath = stored;
     }
   } catch {}
-  const result: ImageGenerationResult = await generateStoryPlotImages(currentTheme.story_plot_id, 0.8, 'storyplot_i2i_all', referencePath);
+  const result: ImageGenerationResult = await generateStoryPlotImages(currentTheme.story_plot_id, undefined, 'storyplot_i2i_all', referencePath);
 
   // 3) 生成結果を page_n_image_url に割り当てて更新
   //    - backendはURL想定だが、現状はローカルのファイルパスをそのまま保存
