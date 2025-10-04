@@ -61,11 +61,21 @@ export default function Page() {
         <Card>
         {publicImageUrl ? (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
-              <img
-                src={publicImageUrl}
-                alt="uploaded"
-                style={{ maxWidth: '100%', maxHeight: '220px', objectFit: 'contain' }}
-              />
+              {/* 4:3アスペクト比固定 */}
+              <div className="w-full max-w-sm">
+                <div className="relative w-full" style={{ aspectRatio: '4/3' }}>
+                  <img
+                    src={publicImageUrl}
+                    alt="uploaded"
+                    className="absolute inset-0 w-full h-full object-cover rounded-lg"
+                    onError={(e) => {
+                      console.error('画像の読み込みに失敗:', publicImageUrl)
+                      // エラーが発生した場合は画像を非表示にする
+                      e.currentTarget.style.display = 'none'
+                    }}
+                  />
+                </div>
+              </div>
               <Button className="relative mt-10 z-10" onClick={handleConfirmImage}>
                 この画像にけってい
               </Button>

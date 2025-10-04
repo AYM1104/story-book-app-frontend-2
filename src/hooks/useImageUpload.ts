@@ -28,9 +28,13 @@ export function useImageUpload() {
     }
     
     // ローカルファイルの場合は従来の処理
+    // バックエンドのパスからファイル名を抽出してフロントエンド用URLに変換
     const parts = uploadedImagePath.replace(/\\/g, '/').split('/')
     const filename = parts[parts.length - 1]
-    return `http://localhost:8000/uploads/${filename}`
+    
+    // 現在のバックエンドサーバーのアドレスとポートを使用
+    const baseUrl = 'http://localhost:8000'
+    return `${baseUrl}/uploads/${filename}`
   }, [uploadedImagePath])
 
   // ファイル選択後にアップロード実行
@@ -47,17 +51,30 @@ export function useImageUpload() {
 
     setIsUploading(true)
     try {
+      console.log('アップロイドを開始...', file.name)
+      
       const res = await fetch('http://localhost:8000/images/upload', {
         method: 'POST',
         body: formData,
       })
+      
+      console.log('レスポンスステータス:', res.status)
+      
       if (!res.ok) {
-        const msg = await res.text()
-        throw new Error(msg || 'Upload failed')
+        const errorText = await res.text()
+        console.error('アップロードエラー:', errorText)
+        throw new Error(`Upload failed: ${res.status} - ${errorText}`)
       }
+      
       const data = await res.json()
-      // GCSの場合はpublic_urlを優先、なければfile_pathを使用
+      console.log('アップロード成功:', data)
+      
+      // public_urlを優先、なければfile_pathを使用
       const imagePath = data?.public_url ?? data?.file_path ?? null
+      console.log('public_url:', data?.public_url)
+      console.log('file_path:', data?.file_path)
+      console.log('選択された画像パス:', imagePath)
+      
       setUploadedImagePath(imagePath)
       try {
         if (imagePath) {
@@ -66,11 +83,15 @@ export function useImageUpload() {
         if (typeof data?.id === 'number') {
           localStorage.setItem('uploaded_image_id', String(data.id))
         }
-      } catch {}
+      } catch (storageError) {
+        console.warn('ローカルストレージ保存失敗:', storageError)
+      }
       setUploadedImageId(typeof data?.id === 'number' ? data.id : null)
       e.target.value = ''
     } catch (err) {
-      console.error(err)
+      console.error('アップロードエラー:', err)
+      // エラーの詳細を表示
+      alert(`画像のアップロードに失敗しました: ${err.message || err}`)
     } finally {
       setIsUploading(false)
     }

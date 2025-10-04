@@ -110,9 +110,9 @@ async function updateStorybookImageUrls(payload: StorybookImageUrlUpdateRequest)
 /**
  * テーマ選択処理（画像生成を含む）
  * @param currentTheme 選択されたテーマ
- * @returns 生成された画像数
+ * @returns 生成された画像数とstorybook_id
  */
-export async function handleSelectTheme(currentTheme: TitleItem): Promise<number> {
+export async function handleSelectTheme(currentTheme: TitleItem): Promise<{ totalGenerated: number; storybookId: number }> {
   if (!currentTheme) {
     throw new Error('テーマが選択されていません');
   }
@@ -160,5 +160,5 @@ export async function handleSelectTheme(currentTheme: TitleItem): Promise<number
     }
   }
 
-  return result.total_generated;
+  return { totalGenerated: result.total_generated, storybookId: storybook_id };
 }

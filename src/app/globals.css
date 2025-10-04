@@ -86,3 +86,17 @@ body {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+/* エメラルド色のスクロールバー */
+.emerald-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.emerald-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.emerald-scrollbar::-webkit-scrollbar-thumb {
+  background: #10b981;
+  border-radius: 4px;
+}

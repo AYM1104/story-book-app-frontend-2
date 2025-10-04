@@ -1,5 +1,6 @@
 "use client"
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import BackgroundStars from '../../components/BackgroundStars'
 import Header from "@/components/Header"
 import Character from "@/components/Character/Character"
@@ -12,6 +13,7 @@ import Button from "@/components/Button/Button";
 import ProgressDots from "@/components/ProgressDots";  
 
 export default function Page() {
+  const router = useRouter()
   const [isGeneratingImages, setIsGeneratingImages] = useState(false)
   const {
     latestTitles,
@@ -31,8 +33,11 @@ export default function Page() {
 
     setIsGeneratingImages(true)
     try {
-      const totalGenerated = await handleSelectTheme(currentTheme)
+      const { totalGenerated, storybookId } = await handleSelectTheme(currentTheme)
       alert(`テーマ「${currentTheme.title}」の画像生成が完了しました！\n生成された画像数: ${totalGenerated}`)
+      
+      // 生成完了後、自動でstorybookページに遷移
+      router.push(`/storybook/${storybookId}`)
     } catch (error) {
       console.error('画像生成エラー:', error)
       alert(`画像生成に失敗しました: ${error instanceof Error ? error.message : '不明なエラー'}`)
