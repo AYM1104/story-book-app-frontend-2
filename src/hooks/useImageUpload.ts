@@ -42,8 +42,8 @@ export function useImageUpload() {
     const file = e.target.files?.[0]
     if (!file) return
 
-    // ユーザーIDを固定値1に設定
-    const savedUserId = '1'
+    // ユーザーIDを固定値2に設定
+    const savedUserId = '2'
 
     const formData = new FormData()
     formData.append('file', file)
@@ -91,7 +91,7 @@ export function useImageUpload() {
     } catch (err) {
       console.error('アップロードエラー:', err)
       // エラーの詳細を表示
-      alert(`画像のアップロードに失敗しました: ${err.message || err}`)
+      alert(`画像のアップロードに失敗しました: ${err instanceof Error ? err.message : String(err)}`)
     } finally {
       setIsUploading(false)
     }

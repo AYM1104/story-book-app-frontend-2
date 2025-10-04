@@ -37,8 +37,8 @@ export default function useStoryTheme(): UseStoryThemeReturn {
         setStorySettingId(parseInt(savedStorySettingId));
       }
       
-      // ユーザーIDを固定値1に設定
-      setUserId(1);
+      // ユーザーIDを固定値2に設定
+      setUserId(2);
     } catch (err) {
       console.error('ローカルストレージ読み込みエラー:', err);
     }
