@@ -108,9 +108,25 @@ export default function Page() {
             console.log('✅ Using public_url:', uploadedImage.public_url)
             // スマホ対応のためURL形式を変換
             let imageUrl = uploadedImage.public_url
+            
+            // 複数のURL形式を試す
             if (imageUrl.startsWith('https://storage.googleapis.com/')) {
-                imageUrl = imageUrl.replace('https://storage.googleapis.com/', 'https://storage.cloud.google.com/')
-                console.log('📱 スマホ対応URL変換:', imageUrl)
+                // 1. storage.cloud.google.com形式に変換
+                const cloudUrl = imageUrl.replace('https://storage.googleapis.com/', 'https://storage.cloud.google.com/')
+                console.log('📱 スマホ対応URL変換 (cloud):', cloudUrl)
+                
+                // 2. 元のURLも保持してフォールバック用に
+                console.log('📱 元のURL (googleapis):', imageUrl)
+                
+                // デバイス判定（簡易版）
+                const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+                if (isMobile) {
+                    console.log('📱 モバイルデバイス検出、cloud.google.com形式を使用')
+                    return cloudUrl
+                } else {
+                    console.log('💻 PCデバイス検出、googleapis.com形式を使用')
+                    return imageUrl
+                }
             }
             return imageUrl
         }
@@ -288,11 +304,25 @@ export default function Page() {
                                                 alt="アップロードした画像"
                                                 className="absolute inset-0 w-full h-full object-cover"
                                                 onError={(e) => {
-                                                    console.error('アップロード画像読み込みエラー:', convertUploadedImageUrl(storybook.uploaded_image));
-                                                    e.currentTarget.style.display = 'none'
+                                                    const currentUrl = e.currentTarget.src;
+                                                    console.error('アップロード画像読み込みエラー:', currentUrl);
+                                                    
+                                                    // フォールバック: 元のURL形式を試す
+                                                    if (currentUrl.includes('storage.cloud.google.com')) {
+                                                        const fallbackUrl = currentUrl.replace('https://storage.cloud.google.com/', 'https://storage.googleapis.com/');
+                                                        console.log('🔄 フォールバックURLを試行:', fallbackUrl);
+                                                        e.currentTarget.src = fallbackUrl;
+                                                    } else if (currentUrl.includes('storage.googleapis.com')) {
+                                                        const fallbackUrl = currentUrl.replace('https://storage.googleapis.com/', 'https://storage.cloud.google.com/');
+                                                        console.log('🔄 フォールバックURLを試行:', fallbackUrl);
+                                                        e.currentTarget.src = fallbackUrl;
+                                                    } else {
+                                                        console.error('❌ すべてのURL形式で失敗、画像を非表示');
+                                                        e.currentTarget.style.display = 'none';
+                                                    }
                                                 }}
                                                 onLoad={() => {
-                                                    console.log('アップロード画像読み込み成功:', convertUploadedImageUrl(storybook.uploaded_image));
+                                                    console.log('✅ アップロード画像読み込み成功:', e.currentTarget.src);
                                                 }}
                                             />
                                         </div>
