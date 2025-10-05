@@ -21,7 +21,7 @@ export default function Page() {
     handleConfirmImage,
   } = useImageUpload()
 
-  // アップロード処理を実行する関数
+  // アップロード処理を実行する関数（現在は使用されていない）
   const handleUpload = async () => {
     if (!selectedFile) return
 
@@ -146,7 +146,23 @@ export default function Page() {
               {/* 決定ボタン */}
               <Button 
                 className="relative mt-4 z-10" 
-                onClick={handleConfirmImage}
+                onClick={async () => {
+                  if (!selectedFile) return
+                  
+                  // まず画像をアップロード
+                  const fakeEvent = {
+                    target: {
+                      files: [selectedFile]
+                    }
+                  } as unknown as React.ChangeEvent<HTMLInputElement>
+                  
+                  await handleFileChange(fakeEvent)
+                  
+                  // アップロード完了後に物語設定を作成
+                  setTimeout(() => {
+                    handleConfirmImage()
+                  }, 500) // 少し待ってから実行
+                }}
                 disabled={isUploading}
               >
                 {isUploading ? 'アップロード中...' : 'この画像にけってい'}
