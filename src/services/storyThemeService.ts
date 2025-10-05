@@ -157,9 +157,13 @@ async function updateStorybookImageUrls(payload: StorybookImageUrlUpdateRequest)
 /**
  * テーマ選択処理（画像生成を含む）
  * @param currentTheme 選択されたテーマ
+ * @param onProgress 進捗更新のコールバック関数
  * @returns 生成された画像数とstorybook_id
  */
-export async function handleSelectTheme(currentTheme: TitleItem): Promise<{ totalGenerated: number; storybookId: number }> {
+export async function handleSelectTheme(
+  currentTheme: TitleItem,
+  onProgress?: (current: number, total: number, pageNumber?: number, status?: 'generating' | 'completed' | 'failed') => void
+): Promise<{ totalGenerated: number; storybookId: number }> {
   if (!currentTheme) {
     throw new Error('テーマが選択されていません');
   }
@@ -177,6 +181,10 @@ export async function handleSelectTheme(currentTheme: TitleItem): Promise<{ tota
       referencePath = stored;
     }
   } catch {}
+  
+  // 進捗更新コールバックを呼び出し
+  onProgress?.(0, 5);
+  
   const result: ImageGenerationResult = await generateStoryPlotImages(currentTheme.story_plot_id, undefined, 'storyplot_i2i_all', referencePath);
 
   // 3) 生成結果を page_n_image_url に割り当てて更新

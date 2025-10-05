@@ -10,7 +10,9 @@ import useStoryTheme from "@/hooks/useStoryTheme"
 import { handleSelectTheme } from "@/services/storyThemeService"
 import HeadingText from "@/components/HeadingText/HeadingText";
 import Button from "@/components/Button/Button";
-import ProgressDots from "@/components/ProgressDots";  
+import ProgressDots from "@/components/ProgressDots";
+import { ImageGenerationProgress } from "@/components/ProgressBar";
+import useImageGenerationProgress from "@/hooks/useImageGenerationProgress";  
 
 export default function Page() {
   const router = useRouter()
@@ -22,6 +24,17 @@ export default function Page() {
     nextTitle,
     error
   } = useStoryTheme()
+  
+  // 画像生成プログレス管理
+  const {
+    progress: imageProgress,
+    startGeneration,
+    setImageGenerating,
+    setImageCompleted,
+    setImageFailed,
+    finishGeneration,
+    resetProgress
+  } = useImageGenerationProgress()
 
   // テーマ選択（画像生成）処理
   const onSelectTheme = async () => {
@@ -32,17 +45,38 @@ export default function Page() {
     }
 
     setIsGeneratingImages(true)
+    startGeneration(5) // 5枚の画像を生成予定
+    
     try {
-      const { totalGenerated, storybookId } = await handleSelectTheme(currentTheme)
+      // プログレス更新コールバック関数
+      const handleProgress = (current: number, total: number, pageNumber?: number, status?: 'generating' | 'completed' | 'failed') => {
+        if (status === 'generating' && pageNumber) {
+          setImageGenerating(pageNumber, `ページ ${pageNumber} の画像を生成中...`)
+        } else if (status === 'completed' && pageNumber) {
+          setImageCompleted(pageNumber)
+        } else if (status === 'failed' && pageNumber) {
+          setImageFailed(pageNumber, `ページ ${pageNumber} の生成に失敗`)
+        } else {
+          // 全体の進捗更新
+          setImageGenerating(current + 1, `画像生成中... (${current + 1}/${total})`)
+        }
+      }
+      
+      const { totalGenerated, storybookId } = await handleSelectTheme(currentTheme, handleProgress)
+      
+      finishGeneration()
+      
       alert(`テーマ「${currentTheme.title}」の画像生成が完了しました！\n生成された画像数: ${totalGenerated}`)
       
       // 生成完了後、自動でstorybookページに遷移
       router.push(`/storybook/${storybookId}`)
     } catch (error) {
       console.error('画像生成エラー:', error)
+      finishGeneration()
       alert(`画像生成に失敗しました: ${error instanceof Error ? error.message : '不明なエラー'}`)
     } finally {
       setIsGeneratingImages(false)
+      resetProgress()
     }
   }
 
@@ -75,6 +109,18 @@ export default function Page() {
         {/* カード */}
         <div className="fixed bottom-[calc(env(safe-area-inset-bottom)+24px)] left-0 right-0 flex justify-center px-2 xs:px-4 sm:px-6 md:px-8 lg:px-10 z-50">
           <Card>
+            {/* 画像生成中のプログレスバー表示 */}
+            {isGeneratingImages && (
+              <div className="absolute inset-0 flex items-center justify-center z-30 bg-white/5 backdrop-blur-sm rounded-2xl">
+                <ImageGenerationProgress
+                  currentImage={imageProgress.current}
+                  totalImages={imageProgress.total}
+                  currentImageDetails={imageProgress.currentImageDetails}
+                  className="mx-4"
+                />
+              </div>
+            )}
+            
             <ThemeInnerCard    
               titles={latestTitles}
               currentIndex={titleSlideIndex}
