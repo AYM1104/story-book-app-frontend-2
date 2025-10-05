@@ -108,7 +108,7 @@ export default function Page() {
         if (uploadedImage.public_url) {
             console.log('✅ Using public_url:', uploadedImage.public_url)
             // スマホ対応のためURL形式を変換
-            let imageUrl = uploadedImage.public_url
+            const imageUrl = uploadedImage.public_url
             
             // 複数のURL形式を試す
             if (imageUrl.startsWith('https://storage.googleapis.com/')) {
