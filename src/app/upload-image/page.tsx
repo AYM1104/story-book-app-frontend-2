@@ -16,31 +16,12 @@ export default function Page() {
   // 画像アップロードフック
   const {
     isUploading,
-    publicImageUrl,
+    uploadedImageId,
     handleFileChange,
-    handleConfirmImage,
+    handleConfirmImage: confirmImage,
   } = useImageUpload()
 
-  // アップロード処理を実行する関数（現在は使用されていない）
-  const handleUpload = async () => {
-    if (!selectedFile) return
-
-    // FormDataを作成してアップロード処理を実行
-    const formData = new FormData()
-    formData.append('file', selectedFile)
-    formData.append('user_id', '2') // 固定のユーザーID
-
-    // ファイル選択イベントをシミュレート
-    const fakeEvent = {
-      target: {
-        files: [selectedFile]
-      }
-    } as unknown as React.ChangeEvent<HTMLInputElement>
-
-    await handleFileChange(fakeEvent)
-  }
-
-  // ファイル選択時の処理
+  // ファイル選択時の処理（プレビューのみ）
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
@@ -61,8 +42,6 @@ export default function Page() {
       // プレビュー用のURLを生成
       const url = URL.createObjectURL(file)
       setPreviewUrl(url)
-      
-      // アップロード処理は実行しない（プレビューのみ）
     }
   }
 
@@ -77,6 +56,61 @@ export default function Page() {
     setPreviewUrl(null)
     if (fileInputRef.current) {
       fileInputRef.current.value = ''
+    }
+  }
+
+  // 画像決定時の処理（アップロード実行）
+  const handleConfirmImage = async () => {
+    if (!selectedFile) {
+      alert('画像が選択されていません')
+      return
+    }
+    
+    try {
+      // ファイル選択イベントをシミュレートしてアップロード実行
+      const fakeEvent = {
+        target: {
+          files: [selectedFile]
+        }
+      } as unknown as React.ChangeEvent<HTMLInputElement>
+      
+      await handleFileChange(fakeEvent)
+      
+      // アップロード完了を待機（より確実な方法）
+      let retryCount = 0
+      const maxRetries = 30 // タイムアウトをさらに延長
+      
+      const waitForUpload = () => {
+        return new Promise<void>((resolve, reject) => {
+          const checkUpload = () => {
+            // localStorageからも確認
+            const storedImageId = localStorage.getItem('uploaded_image_id')
+            const currentImageId = uploadedImageId || (storedImageId ? parseInt(storedImageId) : null)
+            
+            if (currentImageId) {
+              console.log('アップロード完了確認:', currentImageId)
+              resolve()
+            } else if (retryCount >= maxRetries) {
+              reject(new Error('アップロードがタイムアウトしました。しばらく待ってから再度お試しください。'))
+            } else {
+              retryCount++
+              console.log(`アップロード待機中... (${retryCount}/${maxRetries})`)
+              setTimeout(checkUpload, 200) // 間隔を短縮
+            }
+          }
+          checkUpload()
+        })
+      }
+      
+      await waitForUpload()
+      
+      // 物語設定を作成
+      await confirmImage()
+      
+    } catch (error) {
+      console.error('アップロードエラー:', error)
+      const errorMessage = error instanceof Error ? error.message : '画像のアップロードに失敗しました'
+      alert(`エラー: ${errorMessage}`)
     }
   }
 
@@ -118,8 +152,8 @@ export default function Page() {
         {previewUrl ? (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
               {/* プレビュー画像 */}
-              <div className="w-full max-w-sm">
-                <div className="relative w-full" style={{ aspectRatio: '4/3' }}>
+              <div className="w-full max-w-xs">
+                <div className="relative w-full" style={{ aspectRatio: '16/9' }}>
                   <img
                     src={previewUrl}
                     alt="プレビュー"
@@ -146,23 +180,7 @@ export default function Page() {
               {/* 決定ボタン */}
               <Button 
                 className="relative mt-4 z-10" 
-                onClick={async () => {
-                  if (!selectedFile) return
-                  
-                  // まず画像をアップロード
-                  const fakeEvent = {
-                    target: {
-                      files: [selectedFile]
-                    }
-                  } as unknown as React.ChangeEvent<HTMLInputElement>
-                  
-                  await handleFileChange(fakeEvent)
-                  
-                  // アップロード完了後に物語設定を作成
-                  setTimeout(() => {
-                    handleConfirmImage()
-                  }, 500) // 少し待ってから実行
-                }}
+                onClick={handleConfirmImage}
                 disabled={isUploading}
               >
                 {isUploading ? 'アップロード中...' : 'この画像にけってい'}

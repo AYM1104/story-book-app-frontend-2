@@ -98,17 +98,22 @@ export function useImageUpload() {
       }
       
       setUploadedImagePath(imagePath)
+      
+      // 画像IDを先に設定（状態更新の順序を最適化）
+      const imageId = typeof data?.id === 'number' ? data.id : null
+      setUploadedImageId(imageId)
+      
       try {
         if (imagePath) {
           localStorage.setItem('uploaded_image_path', imagePath)
         }
-        if (typeof data?.id === 'number') {
-          localStorage.setItem('uploaded_image_id', String(data.id))
+        if (imageId) {
+          localStorage.setItem('uploaded_image_id', String(imageId))
         }
       } catch (storageError) {
         console.warn('ローカルストレージ保存失敗:', storageError)
       }
-      setUploadedImageId(typeof data?.id === 'number' ? data.id : null)
+      
       e.target.value = ''
     } catch (err) {
       console.error('アップロードエラー:', err)
@@ -121,12 +126,18 @@ export function useImageUpload() {
 
   // 選択した画像で物語設定を作成/更新
   const handleConfirmImage = useCallback(async () => {
-    if (!uploadedImageId) {
-      alert('先に画像をアップロードしてください')
+    // localStorageから画像IDを取得（状態更新の遅延に対応）
+    const storedImageId = localStorage.getItem('uploaded_image_id')
+    const imageId = uploadedImageId || (storedImageId ? parseInt(storedImageId) : null)
+    
+    if (!imageId) {
+      alert('画像IDが見つかりません。再度画像をアップロードしてください。')
       return
     }
+    
     try {
-      const res = await fetch(`https://story-book-backend-20459204449.asia-northeast1.run.app/story/story_settings/${uploadedImageId}`, {
+      console.log('物語設定作成開始、画像ID:', imageId)
+      const res = await fetch(`https://story-book-backend-20459204449.asia-northeast1.run.app/story/story_settings/${imageId}`, {
         method: 'POST',
       })
       if (!res.ok) {
@@ -144,7 +155,8 @@ export function useImageUpload() {
       // 物語設定が完了したら question ページへ遷移
       router.push('/question')
     } catch (err) {
-      console.error(err)
+      console.error('物語設定作成エラー:', err)
+      alert('物語設定の作成に失敗しました。もう一度お試しください。')
     }
   }, [uploadedImageId, router])
 
