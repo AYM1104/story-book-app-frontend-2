@@ -106,7 +106,13 @@ export default function Page() {
         // GCSの公開URLがある場合はそれを使用
         if (uploadedImage.public_url) {
             console.log('✅ Using public_url:', uploadedImage.public_url)
-            return uploadedImage.public_url
+            // スマホ対応のためURL形式を変換
+            let imageUrl = uploadedImage.public_url
+            if (imageUrl.startsWith('https://storage.googleapis.com/')) {
+                imageUrl = imageUrl.replace('https://storage.googleapis.com/', 'https://storage.cloud.google.com/')
+                console.log('📱 スマホ対応URL変換:', imageUrl)
+            }
+            return imageUrl
         }
         
         // バックエンドからGCSの公開URLが返されるため、file_pathをそのまま使用
