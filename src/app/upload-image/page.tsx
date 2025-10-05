@@ -21,6 +21,25 @@ export default function Page() {
     handleConfirmImage,
   } = useImageUpload()
 
+  // アップロード処理を実行する関数
+  const handleUpload = async () => {
+    if (!selectedFile) return
+
+    // FormDataを作成してアップロード処理を実行
+    const formData = new FormData()
+    formData.append('file', selectedFile)
+    formData.append('user_id', '2') // 固定のユーザーID
+
+    // ファイル選択イベントをシミュレート
+    const fakeEvent = {
+      target: {
+        files: [selectedFile]
+      }
+    } as unknown as React.ChangeEvent<HTMLInputElement>
+
+    await handleFileChange(fakeEvent)
+  }
+
   // ファイル選択時の処理
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -43,8 +62,7 @@ export default function Page() {
       const url = URL.createObjectURL(file)
       setPreviewUrl(url)
       
-      // 既存のアップロード処理も実行
-      handleFileChange(e)
+      // アップロード処理は実行しない（プレビューのみ）
     }
   }
 
