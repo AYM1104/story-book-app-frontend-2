@@ -48,7 +48,7 @@ export default function Header({
       <div className="w-full h-full flex items-center justify-between px-4 sm:px-6 md:px-8">
         {/* 左：ロゴ + タイトル */}
         <div className="flex items-center gap-2 sm:gap-3">
-          <Link href="/" className="inline-flex items-center">
+          <Link href="/home" className="inline-flex items-center">
             <Image 
               src={logoSrc} 
               alt={logoAlt} 

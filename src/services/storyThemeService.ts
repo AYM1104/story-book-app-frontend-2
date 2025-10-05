@@ -43,26 +43,42 @@ export async function generateStoryPlotImages(
   prefix: string = "storyplot_i2i_all",
   referenceImagePath?: string
 ): Promise<ImageGenerationResponse> {
-  const response = await fetch('http://localhost:8000/images/generation/generate-storyplot-all-pages-image-to-image', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      story_plot_id: storyPlotId,
-      strength,
-      prefix,
-      // backend側は未指定の場合に自動解決するが、ここで明示指定すると確実
-      reference_image_path: referenceImagePath
-    })
-  });
+  const url = 'https://story-book-backend-20459204449.asia-northeast1.run.app/images/generation/generate-storyplot-all-pages-image-to-image';
+  const payload = {
+    story_plot_id: storyPlotId,
+    strength,
+    prefix,
+    // backend側は未指定の場合に自動解決するが、ここで明示指定すると確実
+    reference_image_path: referenceImagePath
+  };
+  
+  console.log('🖼️ Image generation request:', { url, payload });
+  
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload)
+    });
 
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(errorText || '画像生成に失敗しました');
+    console.log('🖼️ Image generation response status:', response.status);
+    console.log('🖼️ Image generation response ok:', response.ok);
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('❌ Image generation failed:', errorText);
+      throw new Error(errorText || '画像生成に失敗しました');
+    }
+
+    const result = await response.json();
+    console.log('🖼️ Image generation result:', result);
+    return result;
+  } catch (error) {
+    console.error('❌ Image generation fetch error:', error);
+    throw error;
   }
-
-  return await response.json();
 }
 
 /**
@@ -70,20 +86,36 @@ export async function generateStoryPlotImages(
  * - backend: POST /storybook/confirm-theme-and-create
  */
 async function confirmThemeAndCreate(storyPlotId: number, selectedTheme: string): Promise<ThemeConfirmationResponse> {
-  const res = await fetch('http://localhost:8000/storybook/confirm-theme-and-create', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ story_plot_id: storyPlotId, selected_theme: selectedTheme })
-  });
+  const url = 'https://story-book-backend-20459204449.asia-northeast1.run.app/storybook/confirm-theme-and-create';
+  const payload = { story_plot_id: storyPlotId, selected_theme: selectedTheme };
+  
+  console.log('📚 Theme confirmation request:', { url, payload });
+  
+  try {
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload)
+    });
 
-  if (!res.ok) {
-    const msg = await res.text();
-    throw new Error(msg || 'テーマ確定に失敗しました');
+    console.log('📚 Theme confirmation response status:', res.status);
+    console.log('📚 Theme confirmation response ok:', res.ok);
+
+    if (!res.ok) {
+      const msg = await res.text();
+      console.error('❌ Theme confirmation failed:', msg);
+      throw new Error(msg || 'テーマ確定に失敗しました');
+    }
+
+    const result = await res.json();
+    console.log('📚 Theme confirmation result:', result);
+    return result;
+  } catch (error) {
+    console.error('❌ Theme confirmation fetch error:', error);
+    throw error;
   }
-
-  return await res.json();
 }
 
 /**
@@ -91,20 +123,35 @@ async function confirmThemeAndCreate(storyPlotId: number, selectedTheme: string)
  * - backend: POST /storybook/update-image-urls
  */
 async function updateStorybookImageUrls(payload: StorybookImageUrlUpdateRequest): Promise<StorybookImageUrlUpdateResponse> {
-  const res = await fetch('http://localhost:8000/storybook/update-image-urls', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(payload)
-  });
+  const url = 'https://story-book-backend-20459204449.asia-northeast1.run.app/storybook/update-image-urls';
+  
+  console.log('🔄 Image URL update request:', { url, payload });
+  
+  try {
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload)
+    });
 
-  if (!res.ok) {
-    const msg = await res.text();
-    throw new Error(msg || '画像URLの更新に失敗しました');
+    console.log('🔄 Image URL update response status:', res.status);
+    console.log('🔄 Image URL update response ok:', res.ok);
+
+    if (!res.ok) {
+      const msg = await res.text();
+      console.error('❌ Image URL update failed:', msg);
+      throw new Error(msg || '画像URLの更新に失敗しました');
+    }
+
+    const result = await res.json();
+    console.log('🔄 Image URL update result:', result);
+    return result;
+  } catch (error) {
+    console.error('❌ Image URL update fetch error:', error);
+    throw error;
   }
-
-  return await res.json();
 }
 
 /**

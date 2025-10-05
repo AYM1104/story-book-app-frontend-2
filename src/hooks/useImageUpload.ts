@@ -33,9 +33,24 @@ export function useImageUpload() {
     const filename = parts[parts.length - 1]
     
     // 現在のバックエンドサーバーのアドレスとポートを使用
-    const baseUrl = 'http://localhost:8000'
+    const baseUrl = 'https://story-book-backend-20459204449.asia-northeast1.run.app'
     return `${baseUrl}/uploads/${filename}`
   }, [uploadedImagePath])
+
+  // 公開URLを取得する関数
+  const getPublicUrl = useCallback(async (imageId: number) => {
+    try {
+      const response = await fetch(`https://story-book-backend-20459204449.asia-northeast1.run.app/images/${imageId}/signed-url`)
+      if (!response.ok) {
+        throw new Error(`Failed to get public URL: ${response.status}`)
+      }
+      const data = await response.json()
+      return data.public_url
+    } catch (error) {
+      console.error('公開URL取得エラー:', error)
+      return null
+    }
+  }, [])
 
   // ファイル選択後にアップロード実行
   const handleFileChange = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -53,7 +68,7 @@ export function useImageUpload() {
     try {
       console.log('アップロードを開始...', file.name)
       
-      const res = await fetch('http://localhost:8000/images/upload', {
+      const res = await fetch('https://story-book-backend-20459204449.asia-northeast1.run.app/images/upload', {
         method: 'POST',
         body: formData,
       })
@@ -70,10 +85,17 @@ export function useImageUpload() {
       console.log('アップロード成功:', data)
       
       // public_urlを優先、なければfile_pathを使用
-      const imagePath = data?.public_url ?? data?.file_path ?? null
+      let imagePath = data?.public_url ?? data?.file_path ?? null
       console.log('public_url:', data?.public_url)
       console.log('file_path:', data?.file_path)
       console.log('選択された画像パス:', imagePath)
+      
+      // GCSのstorage.googleapis.com形式の場合はstorage.cloud.google.com形式に変換
+      if (imagePath && imagePath.startsWith('https://storage.googleapis.com/')) {
+        console.log('GCS storage.googleapis.com形式検出、storage.cloud.google.com形式に変換中...')
+        imagePath = imagePath.replace('https://storage.googleapis.com/', 'https://storage.cloud.google.com/')
+        console.log('URL変換成功:', imagePath)
+      }
       
       setUploadedImagePath(imagePath)
       try {
@@ -104,7 +126,7 @@ export function useImageUpload() {
       return
     }
     try {
-      const res = await fetch(`http://localhost:8000/story/story_settings/${uploadedImageId}`, {
+      const res = await fetch(`https://story-book-backend-20459204449.asia-northeast1.run.app/story/story_settings/${uploadedImageId}`, {
         method: 'POST',
       })
       if (!res.ok) {
@@ -135,6 +157,7 @@ export function useImageUpload() {
     // actions
     handleFileChange,
     handleConfirmImage,
+    getPublicUrl,
     // setter（必要に応じて外部からも操作可能に）
     setUploadedImagePath,
     setUploadedImageId,

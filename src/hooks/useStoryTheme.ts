@@ -53,15 +53,23 @@ export default function useStoryTheme(): UseStoryThemeReturn {
       setError(null);
       
       try {
-        const url = `http://localhost:8000/story/story_plots?user_id=${userId}&story_setting_id=${storySettingId}&limit=3`;
+        const url = `https://story-book-backend-20459204449.asia-northeast1.run.app/story/story_plots?user_id=${userId}&story_setting_id=${storySettingId}&limit=3`;
+        console.log('🔍 Fetching URL:', url);
+        console.log('🔍 User ID:', userId, 'Story Setting ID:', storySettingId);
+        
         const res = await fetch(url);
+        console.log('🔍 Response status:', res.status);
+        console.log('🔍 Response ok:', res.ok);
         
         if (!res.ok) {
           const msg = await res.text();
+          console.error('❌ Response not ok:', msg);
           throw new Error(msg || 'Fetch latest titles failed');
         }
         
         const data = await res.json();
+        console.log('🔍 Response data:', data);
+        
         const items = Array.isArray(data?.items) ? data.items : [];
         const formattedItems = items.map((it: StoryPlotItem) => ({
           story_plot_id: it.story_plot_id,
@@ -70,10 +78,14 @@ export default function useStoryTheme(): UseStoryThemeReturn {
           selected_theme: it.selected_theme ?? undefined
         }));
         
+        console.log('🔍 Formatted items:', formattedItems);
         setLatestTitles(formattedItems);
         setTitleSlideIndex(0);
       } catch (e) {
-        console.error(e);
+        console.error('❌ Fetch error details:', e);
+        console.error('❌ Error type:', typeof e);
+        console.error('❌ Error name:', e instanceof Error ? e.name : 'Unknown');
+        console.error('❌ Error message:', e instanceof Error ? e.message : String(e));
         setError(e instanceof Error ? e.message : '不明なエラーが発生しました');
       } finally {
         setIsLoading(false);

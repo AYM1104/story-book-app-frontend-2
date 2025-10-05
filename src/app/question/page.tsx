@@ -63,7 +63,7 @@ export default function Page() {
 
   const fetchQuestions = async (id: number) => {
     try {
-      const qres = await fetch(`http://localhost:8000/story/story_settings/${id}/questions`)
+      const qres = await fetch(`https://story-book-backend-20459204449.asia-northeast1.run.app/story/story_settings/${id}/questions`)
       if (!qres.ok) {
         const msg = await qres.text()
         throw new Error(msg || 'Fetch questions failed')
@@ -163,7 +163,7 @@ export default function Page() {
     try {
       const entries = Object.entries(answers).filter(([, value]) => value !== '')
       for (const [field, answer] of entries) {
-        const res = await fetch(`http://localhost:8000/story/story_settings/${storySettingId}/answers`, {
+        const res = await fetch(`https://story-book-backend-20459204449.asia-northeast1.run.app/story/story_settings/${storySettingId}/answers`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ field, answer })
@@ -175,7 +175,7 @@ export default function Page() {
       }
 
       // 回答保存がすべて成功したら、ストーリー生成を起動
-      const genRes = await fetch('http://localhost:8000/story/story_generator', {
+      const genRes = await fetch('https://story-book-backend-20459204449.asia-northeast1.run.app/story/story_generator', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ story_setting_id: storySettingId })

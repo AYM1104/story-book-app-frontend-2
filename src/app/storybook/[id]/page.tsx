@@ -51,7 +51,7 @@ export default function Page() {
                 setLoading(true)
                 setError(null)
                 
-                const response = await fetch(`http://localhost:8000/storybook/${storybookId}`)
+                const response = await fetch(`https://story-book-backend-20459204449.asia-northeast1.run.app/storybook/${storybookId}`)
                 
                 if (!response.ok) {
                     if (response.status === 404) {
@@ -61,6 +61,8 @@ export default function Page() {
                 }
                 
                 const data = await response.json()
+                console.log('📚 Storybook data received:', data)
+                console.log('🖼️ Uploaded image data:', data.uploaded_image)
                 setStorybook(data)
             } catch (error) {
                 console.error('絵本の取得エラー:', error)
@@ -88,35 +90,28 @@ export default function Page() {
     const convertImageUrl = (imageUrl: string | null | undefined): string | null => {
         if (!imageUrl) return null
         
-        // 絶対パスの場合は相対パスに変換
-        if (imageUrl.includes('\\') || imageUrl.includes('C:')) {
-            const parts = imageUrl.replace(/\\/g, '/').split('/')
-            const filename = parts[parts.length - 1]
-            return `http://localhost:8000/uploads/generated_images/${filename}`
-        }
-        
-        // 既に相対パスの場合はそのまま
-        return imageUrl.startsWith('http') ? imageUrl : `http://localhost:8000${imageUrl}`
+        // バックエンドからGCSの公開URLが返されるため、そのまま使用
+        return imageUrl
     }
 
     // アップロード画像のURLを変換する関数
     const convertUploadedImageUrl = (uploadedImage: StoryBook['uploaded_image']): string | null => {
-        if (!uploadedImage) return null
+        if (!uploadedImage) {
+            console.log('❌ uploadedImage is null')
+            return null
+        }
+        
+        console.log('🔍 uploadedImage data:', uploadedImage)
         
         // GCSの公開URLがある場合はそれを使用
         if (uploadedImage.public_url) {
+            console.log('✅ Using public_url:', uploadedImage.public_url)
             return uploadedImage.public_url
         }
         
-        // ローカルファイルの場合は従来の処理
-        if (uploadedImage.file_path.includes('\\') || uploadedImage.file_path.includes('C:')) {
-            const parts = uploadedImage.file_path.replace(/\\/g, '/').split('/')
-            const filename = parts[parts.length - 1]
-            return `http://localhost:8000/uploads/upload_images/${filename}`
-        }
-        
-        // 既に相対パスの場合はそのまま
-        return uploadedImage.file_path.startsWith('http') ? uploadedImage.file_path : `http://localhost:8000${uploadedImage.file_path}`
+        // バックエンドからGCSの公開URLが返されるため、file_pathをそのまま使用
+        console.log('📁 Using file_path:', uploadedImage.file_path)
+        return uploadedImage.file_path
     }
 
     // スクロール位置を監視する関数（デバウンス付き）
@@ -264,22 +259,28 @@ export default function Page() {
 
                 {/* StoryBookCard表示エリア */}
                 <div className="flex-1 flex justify-center items-center px-4">
-                    <div className="w-full max-w-2xl">
-                        <StoryBookCard>
+                    <div className="w-full">
+                        <StoryBookCard width="full">
                             <div className="w-full h-full flex flex-col items-center justify-start">
                                 {/* アップロード画像の表示 */}
-                                {storybook.uploaded_image && convertUploadedImageUrl(storybook.uploaded_image) && (
-                                    <div className="mb-4 w-full max-w-md">
+                                {(() => {
+                                    const imageUrl = convertUploadedImageUrl(storybook.uploaded_image)
+                                    console.log('🖼️ Image URL for display:', imageUrl)
+                                    return storybook.uploaded_image && imageUrl
+                                })() && (
+                                    <div className="mb-4 w-full">
                                         <div className="text-center mb-2">
                                             <span className="text-sm text-white/80 bg-white/20 px-3 py-1 rounded-full">
                                                 アップロードした画像
                                             </span>
                                         </div>
-                                        <div className="relative w-full" style={{ aspectRatio: '16/9' }}>
-                                            <img 
-                                                src={convertUploadedImageUrl(storybook.uploaded_image)!} 
+
+                                        {/* 親に padding-top で 16:9 を確保 */}
+                                        <div className="relative w-full overflow-hidden rounded-xl shadow-lg" style={{ paddingTop: '56.25%' }}>
+                                            <img
+                                                src={convertUploadedImageUrl(storybook.uploaded_image)!}
                                                 alt="アップロードした画像"
-                                                className="absolute inset-0 w-full h-full object-contain rounded-xl shadow-lg"
+                                                className="absolute inset-0 w-full h-full object-cover"
                                                 onError={(e) => {
                                                     console.error('アップロード画像読み込みエラー:', convertUploadedImageUrl(storybook.uploaded_image));
                                                     e.currentTarget.style.display = 'none'
@@ -294,12 +295,12 @@ export default function Page() {
 
                                 {/* 現在のページの画像表示 */}
                                 {currentPageData?.image && (
-                                    <div className="mb-4 w-full max-w-md">
+                                    <div className="mb-4 w-full">
                                         <div className="relative w-full" style={{ aspectRatio: '16/9' }}>
                                             <img 
                                                 src={currentPageData.image!} 
                                                 alt={`${currentPage}ページ目の画像`}
-                                                className="absolute inset-0 w-full h-full object-contain rounded-xl shadow-lg"
+                                                className="absolute inset-0 w-full h-full object-fill rounded-xl shadow-lg"
                                                 onError={(e) => {
                                                     console.error('画像読み込みエラー:', currentPageData.image);
                                                     e.currentTarget.style.display = 'none'
