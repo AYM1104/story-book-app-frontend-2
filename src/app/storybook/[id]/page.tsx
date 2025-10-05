@@ -1,6 +1,7 @@
 "use client"
 import { useEffect, useState, useCallback, useRef } from 'react'
 import { useParams } from 'next/navigation'
+import Image from 'next/image'
 import BackgroundStars from '../../../components/BackgroundStars'
 import Header from "@/components/Header"
 import StoryBookCard from "@/components/Card/StoryBookCard"
@@ -297,12 +298,15 @@ export default function Page() {
                                             </span>
                                         </div>
 
-                                        {/* 親に padding-top で 16:9 を確保 */}
-                                        <div className="relative w-full overflow-hidden rounded-xl shadow-lg" style={{ paddingTop: '56.25%' }}>
-                                            <img
+                                        {/* Next.js Imageコンポーネントを使用 */}
+                                        <div className="relative w-full overflow-hidden rounded-xl shadow-lg" style={{ aspectRatio: '16/9' }}>
+                                            <Image
                                                 src={convertUploadedImageUrl(storybook.uploaded_image)!}
                                                 alt="アップロードした画像"
-                                                className="absolute inset-0 w-full h-full object-cover"
+                                                fill
+                                                className="object-cover"
+                                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
+                                                priority={true}
                                                 onError={(e) => {
                                                     const currentUrl = e.currentTarget.src;
                                                     console.error('アップロード画像読み込みエラー:', currentUrl);
@@ -321,7 +325,7 @@ export default function Page() {
                                                         e.currentTarget.style.display = 'none';
                                                     }
                                                 }}
-                                                onLoad={() => {
+                                                onLoad={(e) => {
                                                     console.log('✅ アップロード画像読み込み成功:', e.currentTarget.src);
                                                 }}
                                             />
@@ -333,10 +337,13 @@ export default function Page() {
                                 {currentPageData?.image && (
                                     <div className="mb-4 w-full">
                                         <div className="relative w-full" style={{ aspectRatio: '16/9' }}>
-                                            <img 
+                                            <Image 
                                                 src={currentPageData.image!} 
                                                 alt={`${currentPage}ページ目の画像`}
-                                                className="absolute inset-0 w-full h-full object-fill rounded-xl shadow-lg"
+                                                fill
+                                                className="object-fill rounded-xl shadow-lg"
+                                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
+                                                priority={currentPage === 1}
                                                 onError={(e) => {
                                                     console.error('画像読み込みエラー:', currentPageData.image);
                                                     e.currentTarget.style.display = 'none'
