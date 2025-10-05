@@ -1,69 +1,132 @@
 "use client"
-import React from 'react'
+import React, { useState } from 'react'
 import BackgroundStars from '../components/BackgroundStars'
 import Card from '../components/Card/Card'
+import ImageUpload from '../components/ImageUpload/ImageUpload'
+import ImageGallery from '../components/ImageUpload/ImageGallery'
+import { UploadImageResponse } from '../services/imageUploadService'
 
 export default function Page() {
+  const [uploadedImages, setUploadedImages] = useState<UploadImageResponse[]>([]);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
+
+  // アップロード成功時の処理
+  const handleUploadSuccess = (result: UploadImageResponse) => {
+    console.log('アップロード成功:', result);
+    // 新しい画像をリストに追加
+    setUploadedImages(prev => [result, ...prev]);
+    // ギャラリーを更新
+    setRefreshTrigger(prev => prev + 1);
+  };
+
+  // アップロードエラー時の処理
+  const handleUploadError = (error: string) => {
+    console.error('アップロードエラー:', error);
+    alert(`アップロードエラー: ${error}`);
+  };
+
   return (
     <BackgroundStars>
-    <main className="page">
-      <h1>レスポンシブテスト</h1>
-      <p className="desc">
-        ウィンドウ幅を変えてカードの列数と配置の変化を
-        <br className="mobileBreak" />
-        確認してください。
-      </p>
+      <main className="page">
+        <div className="header">
+          <h1>画像アップロード</h1>
+          <p className="description">
+            GCPに画像をアップロードして、アップロードされた画像を表示します
+          </p>
+        </div>
 
-      <section className="grid">
-        <article className="card">カード 1</article>
-        <article className="card">カード 2</article>
-        <article className="card">カード 3</article>
-        <article className="card">カード 4</article>
-        <article className="card">カード 5</article>
-        <article className="card">カード 6</article>
-      </section>
+        <section className="upload-section">
+          <Card>
+            <div className="card-content">
+              <h2>画像をアップロード</h2>
+              <ImageUpload 
+                onUploadSuccess={handleUploadSuccess}
+                onUploadError={handleUploadError}
+                userId={1}
+              />
+            </div>
+          </Card>
+        </section>
 
-      <section className="layoutTest">
-        <aside className="sidebar">サイドバー</aside>
-        <div className="content">コンテンツ領域（幅が狭い時は縦並び、広い時は横並び）</div>
-      </section>
+        <section className="gallery-section">
+          <Card>
+            <div className="card-content">
+              <h2>アップロードされた画像</h2>
+              <ImageGallery 
+                userId={1}
+                refreshTrigger={refreshTrigger}
+              />
+            </div>
+          </Card>
+        </section>
 
-      <style jsx>{`
-        .page { padding: 24px; }
-        h1 { font-size: 24px; margin: 0 0 8px; }
-        .desc { color: #666; margin: 0 0 24px; }
-        .mobileBreak { display: none; }
-        @media (max-width: 599px) {
-          .desc { text-align: center; }
-          .mobileBreak { display: inline; }
-        }
+        <style jsx>{`
+          .page { 
+            padding: 24px; 
+            max-width: 1200px;
+            margin: 0 auto;
+          }
+          
+          .header {
+            text-align: center;
+            margin-bottom: 32px;
+          }
+          
+          .header h1 { 
+            font-size: 32px; 
+            margin: 0 0 8px; 
+            color: #333;
+          }
+          
+          .description { 
+            color: #666; 
+            margin: 0; 
+            font-size: 16px;
+          }
 
-        /* カードのグリッド（幅によって列数が 1 → 2 → 3 に変化） */
-        .grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
-        @media (min-width: 600px) { .grid { grid-template-columns: repeat(2, 1fr); } }
-        @media (min-width: 900px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+          .upload-section {
+            margin-bottom: 32px;
+          }
 
-        .card {
-          background: #f5f5f5;
-          border: 1px solid #e5e5e5;
-          border-radius: 8px;
-          padding: 16px;
-        }
+          .gallery-section {
+            margin-bottom: 32px;
+          }
 
-        /* レイアウト検証：縦並び→横並び */
-        .layoutTest { display: flex; flex-direction: column; gap: 12px; margin-top: 24px; }
-        .sidebar { background: #eef6ff; border: 1px solid #cfe3ff; border-radius: 8px; padding: 12px; }
-        .content { background: #fff7e6; border: 1px solid #ffe0b2; border-radius: 8px; padding: 12px; }
-        @media (min-width: 800px) {
-          .layoutTest { flex-direction: row; }
-          .sidebar { width: 240px; flex: 0 0 auto; }
-          .content { flex: 1 1 auto; }
-        }
-      `}</style>
-    </main>
-    <Card>
-      <h1>カード</h1>
-    </Card>
+          .card-content {
+            padding: 24px;
+          }
+
+          .card-content h2 {
+            margin: 0 0 24px 0;
+            color: #333;
+            font-size: 24px;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 8px;
+          }
+
+          @media (max-width: 768px) {
+            .page {
+              padding: 16px;
+            }
+            
+            .header h1 {
+              font-size: 24px;
+            }
+            
+            .description {
+              font-size: 14px;
+            }
+            
+            .card-content {
+              padding: 16px;
+            }
+            
+            .card-content h2 {
+              font-size: 20px;
+            }
+          }
+        `}</style>
+      </main>
     </BackgroundStars>
   )
 }
