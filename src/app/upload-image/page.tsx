@@ -5,11 +5,13 @@ import Character from "@/components/Character/Character"
 import Button from '@/components/Button/Button';
 import Card from "@/components/Card/Card";
 import HeadingText from "@/components/HeadingText/HeadingText";
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import useImageUpload from '@/hooks/useImageUpload';
 
 export default function Page() {
   const fileInputRef = useRef<HTMLInputElement | null>(null)
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null)
 
   // 画像アップロードフック
   const {
@@ -19,9 +21,45 @@ export default function Page() {
     handleConfirmImage,
   } = useImageUpload()
 
+  // ファイル選択時の処理
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      // ファイル形式のチェック
+      if (!file.type.startsWith('image/')) {
+        alert('画像ファイルのみアップロード可能です')
+        return
+      }
+
+      // ファイルサイズのチェック（10MB制限）
+      if (file.size > 10 * 1024 * 1024) {
+        alert('ファイルサイズは10MB以下にしてください')
+        return
+      }
+
+      setSelectedFile(file)
+      
+      // プレビュー用のURLを生成
+      const url = URL.createObjectURL(file)
+      setPreviewUrl(url)
+      
+      // 既存のアップロード処理も実行
+      handleFileChange(e)
+    }
+  }
+
   // 画像選択ダイアログを開く
   const handleClickUpload = () => {
     fileInputRef.current?.click()
+  }
+
+  // ファイル選択をリセット
+  const handleReset = () => {
+    setSelectedFile(null)
+    setPreviewUrl(null)
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
+    }
   }
 
   return (
@@ -51,7 +89,7 @@ export default function Page() {
             type="file"
             accept="image/*"
             className="hidden"
-            onChange={handleFileChange}
+            onChange={handleFileSelect}
           />
         </div>
       </div>
@@ -59,29 +97,47 @@ export default function Page() {
       {/* カード */}
       <div className="fixed bottom-[calc(env(safe-area-inset-bottom)+24px)] left-0 right-0 flex justify-center px-2 xs:px-4 sm:px-6 md:px-8 lg:px-10 z-50">
         <Card>
-        {publicImageUrl ? (
+        {previewUrl ? (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
-              {/* 4:3アスペクト比固定 */}
+              {/* プレビュー画像 */}
               <div className="w-full max-w-sm">
                 <div className="relative w-full" style={{ aspectRatio: '4/3' }}>
                   <img
-                    src={publicImageUrl}
-                    alt="uploaded"
+                    src={previewUrl}
+                    alt="プレビュー"
                     className="absolute inset-0 w-full h-full object-cover rounded-lg"
-                    onError={(e) => {
-                      console.error('画像の読み込みに失敗:', publicImageUrl)
-                      // エラーが発生した場合は画像を非表示にする
-                      e.currentTarget.style.display = 'none'
-                    }}
                   />
+                  {/* 削除ボタン */}
+                  <button
+                    onClick={handleReset}
+                    className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm hover:bg-red-600 transition-colors"
+                  >
+                    ✕
+                  </button>
                 </div>
               </div>
-              <Button className="relative mt-10 z-10" onClick={handleConfirmImage}>
-                この画像にけってい
+              
+              {/* ファイル情報 */}
+              {selectedFile && (
+                <div className="text-center text-sm text-gray-600">
+                  <p className="font-medium">{selectedFile.name}</p>
+                  <p>{(selectedFile.size / 1024 / 1024).toFixed(2)} MB</p>
+                </div>
+              )}
+              
+              {/* 決定ボタン */}
+              <Button 
+                className="relative mt-4 z-10" 
+                onClick={handleConfirmImage}
+                disabled={isUploading}
+              >
+                {isUploading ? 'アップロード中...' : 'この画像にけってい'}
               </Button>
             </div>
           ) : (
-            'アップロードされた画像'
+            <div className="text-center text-gray-500 py-8">
+              画像を選択してください
+            </div>
           )}
         </Card>
       </div>  
@@ -92,4 +148,5 @@ export default function Page() {
     </BackgroundStars>
   )
 }
+    
     
