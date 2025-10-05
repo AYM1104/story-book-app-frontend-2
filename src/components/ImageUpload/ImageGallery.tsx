@@ -1,6 +1,6 @@
 "use client"
 import React, { useState, useEffect } from 'react';
-import { ImageUploadService, UploadImageResponse } from '../../services/imageUploadService';
+import { UploadImageResponse } from '../../services/imageUploadService';
 
 interface ImageGalleryProps {
   userId?: number;

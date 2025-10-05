@@ -48,10 +48,23 @@ export default function ImageUpload({
     event.preventDefault();
     const file = event.dataTransfer.files[0];
     if (file) {
-      const fakeEvent = {
-        target: { files: [file] }
-      } as React.ChangeEvent<HTMLInputElement>;
-      handleFileSelect(fakeEvent);
+      // ファイル選択処理を直接実行
+      if (!file.type.startsWith('image/')) {
+        onUploadError?.('画像ファイルのみアップロード可能です');
+        return;
+      }
+
+      // ファイルサイズのチェック（10MB制限）
+      if (file.size > 10 * 1024 * 1024) {
+        onUploadError?.('ファイルサイズは10MB以下にしてください');
+        return;
+      }
+
+      setSelectedFile(file);
+      
+      // プレビュー用のURLを生成
+      const url = URL.createObjectURL(file);
+      setPreviewUrl(url);
     }
   };
 
@@ -130,12 +143,29 @@ export default function ImageUpload({
         
         {previewUrl ? (
           <div className="preview-container">
-            <img src={previewUrl} alt="プレビュー" className="preview-image" />
+            <div className="preview-image-wrapper">
+              <img src={previewUrl} alt="プレビュー" className="preview-image" />
+              <div className="preview-overlay">
+                <div className="preview-actions">
+                  <button 
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleReset();
+                    }}
+                    className="remove-button"
+                  >
+                    ✕
+                  </button>
+                </div>
+              </div>
+            </div>
             <div className="file-info">
               <p className="file-name">{selectedFile?.name}</p>
               <p className="file-size">
                 {selectedFile ? (selectedFile.size / 1024 / 1024).toFixed(2) : '0'} MB
               </p>
+              <p className="file-type">{selectedFile?.type}</p>
             </div>
           </div>
         ) : (
@@ -219,11 +249,65 @@ export default function ImageUpload({
           gap: 16px;
         }
 
+        .preview-image-wrapper {
+          position: relative;
+          display: inline-block;
+        }
+
         .preview-image {
-          max-width: 200px;
-          max-height: 200px;
-          border-radius: 8px;
-          box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+          max-width: 300px;
+          max-height: 300px;
+          border-radius: 12px;
+          box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+          transition: transform 0.2s ease;
+        }
+
+        .preview-image:hover {
+          transform: scale(1.02);
+        }
+
+        .preview-overlay {
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0,0,0,0.3);
+          border-radius: 12px;
+          opacity: 0;
+          transition: opacity 0.2s ease;
+          display: flex;
+          align-items: flex-start;
+          justify-content: flex-end;
+          padding: 8px;
+        }
+
+        .preview-image-wrapper:hover .preview-overlay {
+          opacity: 1;
+        }
+
+        .preview-actions {
+          display: flex;
+          gap: 8px;
+        }
+
+        .remove-button {
+          background: rgba(220, 53, 69, 0.9);
+          color: white;
+          border: none;
+          border-radius: 50%;
+          width: 32px;
+          height: 32px;
+          font-size: 16px;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: background 0.2s ease;
+        }
+
+        .remove-button:hover {
+          background: rgba(220, 53, 69, 1);
         }
 
         .file-info {
@@ -234,12 +318,20 @@ export default function ImageUpload({
           font-weight: 600;
           color: #333;
           margin: 0 0 4px 0;
+          word-break: break-all;
         }
 
         .file-size {
           color: #666;
           font-size: 14px;
+          margin: 0 0 2px 0;
+        }
+
+        .file-type {
+          color: #888;
+          font-size: 12px;
           margin: 0;
+          text-transform: uppercase;
         }
 
         .upload-placeholder {
