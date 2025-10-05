@@ -7,14 +7,11 @@ import ImageGallery from '../components/ImageUpload/ImageGallery'
 import { UploadImageResponse } from '../services/imageUploadService'
 
 export default function Page() {
-  const [uploadedImages, setUploadedImages] = useState<UploadImageResponse[]>([]);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   // アップロード成功時の処理
   const handleUploadSuccess = (result: UploadImageResponse) => {
     console.log('アップロード成功:', result);
-    // 新しい画像をリストに追加
-    setUploadedImages(prev => [result, ...prev]);
     // ギャラリーを更新
     setRefreshTrigger(prev => prev + 1);
   };
@@ -53,7 +50,6 @@ export default function Page() {
             <div className="card-content">
               <h2>アップロードされた画像</h2>
               <ImageGallery 
-                userId={1}
                 refreshTrigger={refreshTrigger}
               />
             </div>

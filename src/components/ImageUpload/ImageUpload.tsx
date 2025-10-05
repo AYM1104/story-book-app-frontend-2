@@ -134,7 +134,7 @@ export default function ImageUpload({
             <div className="file-info">
               <p className="file-name">{selectedFile?.name}</p>
               <p className="file-size">
-                {(selectedFile?.size! / 1024 / 1024).toFixed(2)} MB
+                {selectedFile ? (selectedFile.size / 1024 / 1024).toFixed(2) : '0'} MB
               </p>
             </div>
           </div>

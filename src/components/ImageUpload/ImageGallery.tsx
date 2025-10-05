@@ -7,7 +7,7 @@ interface ImageGalleryProps {
   refreshTrigger?: number;
 }
 
-export default function ImageGallery({ userId = 1, refreshTrigger }: ImageGalleryProps) {
+export default function ImageGallery({ refreshTrigger }: ImageGalleryProps) {
   const [images, setImages] = useState<UploadImageResponse[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -50,21 +50,21 @@ export default function ImageGallery({ userId = 1, refreshTrigger }: ImageGaller
     }
   };
 
-  // 画像の表示URLを取得する関数
-  const getImageUrl = async (image: UploadImageResponse): Promise<string> => {
-    if (image.public_url) {
-      return image.public_url;
-    }
-    
-    try {
-      // 認証済みURLを取得
-      const signedUrl = await ImageUploadService.getSignedUrl(image.id);
-      return signedUrl;
-    } catch (err) {
-      console.error('画像URL取得エラー:', err);
-      return '/placeholder-image.png'; // フォールバック画像
-    }
-  };
+  // 画像の表示URLを取得する関数（現在は未使用）
+  // const getImageUrl = async (image: UploadImageResponse): Promise<string> => {
+  //   if (image.public_url) {
+  //     return image.public_url;
+  //   }
+  //   
+  //   try {
+  //     // 認証済みURLを取得
+  //     const signedUrl = await ImageUploadService.getSignedUrl(image.id);
+  //     return signedUrl;
+  //   } catch (err) {
+  //     console.error('画像URL取得エラー:', err);
+  //     return '/placeholder-image.png'; // フォールバック画像
+  //   }
+  // };
 
   // 画像をクリックした時の処理
   const handleImageClick = (image: UploadImageResponse) => {
