@@ -125,19 +125,22 @@ export default function WalkingCharacters({ loop = true, speedSeconds = 25, numC
         .animation-wrapper {
           position: relative;
           width: 100%;
-          height: 50vh;
-          overflow: hidden;
-        }
-        /* SVGを画面フルサイズにして中央配置（元style.css） */
-        .character {
-          width: 100vw;
-          height: 50vh;
-          display: block;
-          position: fixed;
-          top: 50%;
-          left: 0;
-          transform: translateY(-50%);
+          min-height: 300px;
           overflow: visible;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        /* SVG配置をモバイル対応に変更 */
+        .character {
+          width: 100%;
+          max-width: 100vw;
+          height: 300px;
+          display: block;
+          position: relative;
+          overflow: visible;
+          -webkit-transform: translateZ(0);
+          transform: translateZ(0);
         }
 
         #left-leg, #right-leg {
@@ -210,24 +213,39 @@ export default function WalkingCharacters({ loop = true, speedSeconds = 25, numC
         /* 横移動（本体ラッパ） */
         .character-root {
           /* Safari向けにshorthandを避けて個別指定 */
+          -webkit-animation-name: walk-move;
           animation-name: walk-move;
+          -webkit-animation-duration: var(--speed, 25s);
           animation-duration: var(--speed, 25s);
+          -webkit-animation-timing-function: linear;
           animation-timing-function: linear;
+          -webkit-animation-iteration-count: var(--walk-iterations, infinite);
           animation-iteration-count: var(--walk-iterations, infinite);
           /* 遅延中は0%を適用し、完了後は最後の状態を保持 */
+          -webkit-animation-fill-mode: both;
           animation-fill-mode: both;
+          -webkit-animation-play-state: var(--play, running);
           animation-play-state: var(--play, running);
-          /* モバイルでの描画最適化 */
-          will-change: transform;
-          transform: translateZ(0);
+          /* モバイルでの描画最適化とSafari対応 */
+          -webkit-backface-visibility: hidden;
+          backface-visibility: hidden;
+          -webkit-perspective: 1000;
+          perspective: 1000;
+        }
+        @-webkit-keyframes walk-move {
+          0%   { -webkit-transform: translateX(100%); transform: translateX(100%); }
+          100% { -webkit-transform: translateX(-400%); transform: translateX(-400%); }
         }
         @keyframes walk-move {
-          0%   { transform: translateX(80vw); }
-          100% { transform: translateX(-330vw); }
+          0%   { -webkit-transform: translateX(100%); transform: translateX(100%); }
+          100% { -webkit-transform: translateX(-400%); transform: translateX(-400%); }
         }
 
         /* 複数体のディレイ（可変・等間隔） */
-        .char .character-root { animation-delay: var(--char-delay, 0s); }
+        .char .character-root { 
+          -webkit-animation-delay: var(--char-delay, 0s);
+          animation-delay: var(--char-delay, 0s);
+        }
 
         /* 色は <use fill> を継承 */
         .char .fill-body { fill: inherit; }
