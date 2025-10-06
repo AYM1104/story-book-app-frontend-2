@@ -209,10 +209,17 @@ export default function WalkingCharacters({ loop = true, speedSeconds = 25, numC
 
         /* 横移動（本体ラッパ） */
         .character-root {
-          animation: walk-move var(--speed, 25s) linear var(--walk-iterations, infinite);
+          /* Safari向けにshorthandを避けて個別指定 */
+          animation-name: walk-move;
+          animation-duration: var(--speed, 25s);
+          animation-timing-function: linear;
+          animation-iteration-count: var(--walk-iterations, infinite);
           /* 遅延中は0%を適用し、完了後は最後の状態を保持 */
           animation-fill-mode: both;
           animation-play-state: var(--play, running);
+          /* モバイルでの描画最適化 */
+          will-change: transform;
+          transform: translateZ(0);
         }
         @keyframes walk-move {
           0%   { transform: translateX(80vw); }
