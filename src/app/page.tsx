@@ -9,6 +9,7 @@ import WalkingCharacters from '@/components/Animation/WalkingCharacters'
 
 export default function Page() {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const [showTestOverlay, setShowTestOverlay] = useState(false); // テスト用オーバーレイ表示フラグ
 
   // アップロード成功時の処理
   const handleUploadSuccess = (result: UploadImageResponse) => {
@@ -31,6 +32,23 @@ export default function Page() {
           <p className="description">
             GCPに画像をアップロードして、アップロードされた画像を表示します
           </p>
+          {/* テスト用ボタン */}
+          <button 
+            onClick={() => setShowTestOverlay(!showTestOverlay)}
+            style={{
+              marginTop: '16px',
+              padding: '12px 24px',
+              backgroundColor: showTestOverlay ? '#dc3545' : '#007bff',
+              color: 'white',
+              border: 'none',
+              borderRadius: '8px',
+              cursor: 'pointer',
+              fontSize: '16px',
+              fontWeight: 'bold'
+            }}
+          >
+            {showTestOverlay ? 'オーバーレイを閉じる' : 'アニメーションオーバーレイをテスト'}
+          </button>
         </div>
 
 
@@ -136,6 +154,55 @@ export default function Page() {
           }
         `}</style>
       </main>
+
+      {/* テスト用: 画像生成中オーバーレイ */}
+      {showTestOverlay && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          zIndex: 9999,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          pointerEvents: 'auto'
+        }}>
+          <div style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.4)'
+          }} />
+          <div style={{
+            position: 'relative',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '24px',
+            padding: '0 16px',
+            maxWidth: '100vw',
+            width: '100%'
+          }}>
+            <div style={{ width: '100%', maxWidth: '800px' }}>
+              <WalkingCharacters loop={false} speedSeconds={30} enableClickPause={false} />
+            </div>
+            <div style={{
+              color: 'white',
+              fontSize: '24px',
+              fontWeight: 'bold',
+              textAlign: 'center',
+              textShadow: '0 2px 4px rgba(0,0,0,0.6)'
+            }}>
+              テスト中・・・
+            </div>
+          </div>
+        </div>
+      )}
     </BackgroundStars>
   )
 }

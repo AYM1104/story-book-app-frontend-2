@@ -139,8 +139,6 @@ export default function WalkingCharacters({ loop = true, speedSeconds = 25, numC
           display: block;
           position: relative;
           overflow: visible;
-          -webkit-transform: translateZ(0);
-          transform: translateZ(0);
         }
 
         #left-leg, #right-leg {
@@ -212,38 +210,17 @@ export default function WalkingCharacters({ loop = true, speedSeconds = 25, numC
 
         /* 横移動（本体ラッパ） */
         .character-root {
-          /* Safari向けにshorthandを避けて個別指定 */
-          -webkit-animation-name: walk-move;
-          animation-name: walk-move;
-          -webkit-animation-duration: var(--speed, 25s);
-          animation-duration: var(--speed, 25s);
-          -webkit-animation-timing-function: linear;
-          animation-timing-function: linear;
-          -webkit-animation-iteration-count: var(--walk-iterations, infinite);
-          animation-iteration-count: var(--walk-iterations, infinite);
-          /* 遅延中は0%を適用し、完了後は最後の状態を保持 */
-          -webkit-animation-fill-mode: both;
-          animation-fill-mode: both;
-          -webkit-animation-play-state: var(--play, running);
+          animation: walk-move var(--speed, 25s) linear var(--walk-iterations, infinite) both;
           animation-play-state: var(--play, running);
-          /* モバイルでの描画最適化とSafari対応 */
-          -webkit-backface-visibility: hidden;
-          backface-visibility: hidden;
-          -webkit-perspective: 1000;
-          perspective: 1000;
-        }
-        @-webkit-keyframes walk-move {
-          0%   { -webkit-transform: translateX(100%); transform: translateX(100%); }
-          100% { -webkit-transform: translateX(-400%); transform: translateX(-400%); }
+          will-change: transform;
         }
         @keyframes walk-move {
-          0%   { -webkit-transform: translateX(100%); transform: translateX(100%); }
-          100% { -webkit-transform: translateX(-400%); transform: translateX(-400%); }
+          0%   { transform: translateX(100%); }
+          100% { transform: translateX(-400%); }
         }
 
         /* 複数体のディレイ（可変・等間隔） */
         .char .character-root { 
-          -webkit-animation-delay: var(--char-delay, 0s);
           animation-delay: var(--char-delay, 0s);
         }
 
