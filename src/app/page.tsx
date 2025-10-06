@@ -1,9 +1,6 @@
 "use client"
 import React, { useState } from 'react'
 import BackgroundStars from '../components/BackgroundStars'
-import Card from '../components/Card/Card'
-import ImageUpload from '../components/ImageUpload/ImageUpload'
-import ImageGallery from '../components/ImageUpload/ImageGallery'
 import { UploadImageResponse } from '../services/imageUploadService'
 import WalkingCharacters from '@/components/Animation/WalkingCharacters'
 
@@ -28,7 +25,7 @@ export default function Page() {
     <BackgroundStars>
       <main className="page">
         <div className="header">
-          <h1>画像アップロード</h1>
+          <h1>てすと</h1>
           <p className="description">
             GCPに画像をアップロードして、アップロードされた画像を表示します
           </p>
@@ -50,19 +47,6 @@ export default function Page() {
             {showTestOverlay ? 'オーバーレイを閉じる' : 'アニメーションオーバーレイをテスト'}
           </button>
         </div>
-
-
-
-        <section className="gallery-section">
-          <Card>
-            <div className="card-content">
-              <h2>アップロードされた画像</h2>
-              <ImageGallery 
-                refreshTrigger={refreshTrigger}
-              />
-            </div>
-          </Card>
-        </section>
 
         {/* @animation/ のSVGアニメーション */}
         <section className="character-section">

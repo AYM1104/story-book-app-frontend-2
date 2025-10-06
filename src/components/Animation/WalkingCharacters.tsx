@@ -12,6 +12,68 @@ type WalkingCharactersProps = {
   enableClickPause?: boolean
 }
 
+// キャラクター1体分のSVG（インライン展開用）
+function CharacterSVG() {
+  return (
+    <g id="character" className="character-root">
+      {/* 体と角の共通ラッパ：位置だけ決める */}
+      <g id="torso" transform="translate(10,55)">
+        {/* 角 */}
+        <g transform="translate(161, -41)">
+          <g id="antler">
+            <path d="M57.1043 0.140505C8.08581 2.73628 0 51.0166 0 51.0166L18.6979 52.0549C18.6979 52.0549 21.7266 20.9063 57.1043 20.9063C70.749 20.9063 73.2757 26.6169 83.3827 29.2126C93.4896 31.8083 106.123 -2.45527 57.1043 0.140505Z" className="fill-body"/>
+          </g>
+        </g>
+
+        {/* 体本体 */}
+        <g id="body">
+          <path d="M278.059 219.675C264.814 273.295 219.196 290 142.745 290C66.294 290 11.7045 275.531 1.59395 219.675C-7.73698 160.78 22.2041 3.4729 136.524 0.0524635C255.658 -3.51203 288.947 175.599 278.059 219.675Z" className="fill-body"/>
+        </g>
+
+        {/* 左目 白 */}
+        <g transform="translate(41,51)">
+          <g id="left-eye-white">
+            <circle cx="32.9578" cy="32.9576" r="32" fill="#F8F8FA"/>
+          </g>
+        </g>
+        {/* 左目 黒 */}
+        <g transform="translate(48,62)">
+          <g id="left-eye-black" className="look-up-then-right">
+            <circle cx="18.6513" cy="18.3989" r="18" fill="#362D30"/>
+          </g>
+        </g>
+
+        {/* 右目 白 */}
+        <g transform="translate(120,51)">
+          <g id="right-eye-white">
+            <circle cx="32.9578" cy="32.9576" r="32" fill="#F8F8FA"/>
+          </g>
+        </g>
+        {/* 右目 黒 */}
+        <g transform="translate(127,62)">
+          <g id="right-eye-black" className="look-up-then-right">
+            <circle cx="18.6513" cy="18.3989" r="18" fill="#362D30"/>
+          </g>
+        </g>
+      </g>
+
+      {/* 左足 */}
+      <g transform="translate(80,308)">
+        <g id="left-leg" className="part left-leg">
+          <path d="M12.2442 45C18.7442 37.5 12.2442 0 12.2442 0H45.2441V57.5C45.2441 67.5 36.3751 72.5945 25.7442 74C15.6391 75.336 4.26317 76.0663 0.74416 66.5C-2.54317 57.5635 5.74409 52.5 12.2442 45Z" className="fill-body"/>
+        </g>
+      </g>
+
+      {/* 右足 */}
+      <g transform="translate(158,308)">
+        <g id="right-leg" className="part right-leg">
+          <path d="M12.2442 45C18.7442 37.5 12.2442 0 12.2442 0H45.2441V57.5C45.2441 67.5 36.3751 72.5945 25.7442 74C15.6391 75.336 4.26317 76.0663 0.74416 66.5C-2.54317 57.5635 5.74409 52.5 12.2442 45Z" className="fill-body"/>
+        </g>
+      </g>
+    </g>
+  )
+}
+
 // SVGベースの歩行アニメーションを表示するコンポーネント
 // 元ソース: frontend/animation/index.html, style.css, script.js
 export default function WalkingCharacters({ loop = true, speedSeconds = 25, numCharacters = 4, enableClickPause = true }: WalkingCharactersProps) {
@@ -40,82 +102,21 @@ export default function WalkingCharacters({ loop = true, speedSeconds = 25, numC
         className="character"
         viewBox="0 0 620 400"
         xmlns="http://www.w3.org/2000/svg"
-        xmlnsXlink="http://www.w3.org/1999/xlink"
         onClick={handleClick}
       >
-        <defs>
-          <g id="CHAR">
-            {/* キャラ全体をまとめるラッパ */}
-            <g id="character" className="character-root">
-              {/* 体と角の共通ラッパ：位置だけ決める */}
-              <g id="torso" transform="translate(10,55)">
-                {/* 角 */}
-                <g transform="translate(161, -41)">
-                  <g id="antler">
-                    <path d="M57.1043 0.140505C8.08581 2.73628 0 51.0166 0 51.0166L18.6979 52.0549C18.6979 52.0549 21.7266 20.9063 57.1043 20.9063C70.749 20.9063 73.2757 26.6169 83.3827 29.2126C93.4896 31.8083 106.123 -2.45527 57.1043 0.140505Z" className="fill-body"/>
-                  </g>
-                </g>
-
-                {/* 体本体 */}
-                <g id="body">
-                  <path d="M278.059 219.675C264.814 273.295 219.196 290 142.745 290C66.294 290 11.7045 275.531 1.59395 219.675C-7.73698 160.78 22.2041 3.4729 136.524 0.0524635C255.658 -3.51203 288.947 175.599 278.059 219.675Z" className="fill-body"/>
-                </g>
-
-                {/* 左目 白 */}
-                <g transform="translate(41,51)">{/* 位置だけ */}
-                  <g id="left-eye-white">
-                    <circle cx="32.9578" cy="32.9576" r="32" fill="#F8F8FA"/>
-                  </g>
-                </g>
-                {/* 左目 黒 */}
-                <g transform="translate(48,62)">
-                  <g id="left-eye-black" className="look-up-then-right">
-                    <circle cx="18.6513" cy="18.3989" r="18" fill="#362D30"/>
-                  </g>
-                </g>
-
-                {/* 右目 白 */}
-                <g transform="translate(120,51)">
-                  <g id="right-eye-white">
-                    <circle cx="32.9578" cy="32.9576" r="32" fill="#F8F8FA"/>
-                  </g>
-                </g>
-                {/* 右目 黒 */}
-                <g transform="translate(127,62)">
-                  <g id="right-eye-black" className="look-up-then-right">
-                    <circle cx="18.6513" cy="18.3989" r="18" fill="#362D30"/>
-                  </g>
-                </g>
-              </g>
-
-              {/* 左足 */}
-              <g transform="translate(80,308)">{/* 位置だけ */}
-                <g id="left-leg" className="part left-leg"> {/* 回転だけ */}
-                  <path d="M12.2442 45C18.7442 37.5 12.2442 0 12.2442 0H45.2441V57.5C45.2441 67.5 36.3751 72.5945 25.7442 74C15.6391 75.336 4.26317 76.0663 0.74416 66.5C-2.54317 57.5635 5.74409 52.5 12.2442 45Z" className="fill-body"/>
-                </g>
-              </g>
-
-              {/* 右足 */}
-              <g transform="translate(158,308)">
-                <g id="right-leg" className="part right-leg">
-                  <path d="M12.2442 45C18.7442 37.5 12.2442 0 12.2442 0H45.2441V57.5C45.2441 67.5 36.3751 72.5945 25.7442 74C15.6391 75.336 4.26317 76.0663 0.74416 66.5C-2.54317 57.5635 5.74409 52.5 12.2442 45Z" className="fill-body"/>
-                </g>
-              </g>
-            </g>
-          </g>
-        </defs>
-
-        {/* 実体を複数配置（色は <use fill> から指定）。等間隔ディレイ */}
+        {/* useをやめて直接インライン展開（Safari/モバイル対応） */}
         {Array.from({ length: Math.max(1, numCharacters) }).map((_, i) => {
           const colors = ["#FFC31C", "#77C7E3", "#E3662A", "#A481B4", "#5CC9A7", "#E86AA6"]
           const fill = colors[i % colors.length]
           const translateX = i * 320
           const delaySec = (i * speedSeconds) / Math.max(1, numCharacters)
           type CharStyle = React.CSSProperties & { ['--char-delay']?: string }
-          const charStyle: CharStyle = { ['--char-delay']: `${delaySec}s` }
+          const charStyle: CharStyle = { ['--char-delay']: `${delaySec}s`, fill }
           return (
             <g key={i} className="char" style={charStyle}>
-              <use href="#CHAR" xlinkHref="#CHAR" transform={`translate(${translateX},0)`} fill={fill} />
+              <g transform={`translate(${translateX},0)`}>
+                <CharacterSVG />
+              </g>
             </g>
           )
         })}
