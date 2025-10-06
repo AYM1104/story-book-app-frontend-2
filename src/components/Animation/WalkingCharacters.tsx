@@ -24,14 +24,18 @@ export default function WalkingCharacters({ loop = true, speedSeconds = 25, numC
     }
   }, [enableClickPause])
 
+  // CSS変数を型安全に渡すための型
+  type WrapperStyle = React.CSSProperties & {
+    ['--walk-iterations']?: string
+    ['--speed']?: string
+  }
+  const wrapperStyle: WrapperStyle = {
+    ['--walk-iterations']: loop ? 'infinite' : '1',
+    ['--speed']: `${speedSeconds}s`,
+  }
+
   return (
-    <div className="animation-wrapper" style={{
-      // CSS変数で制御
-      // @ts-ignore - CSS var をJSXで設定
-      ['--walk-iterations' as any]: loop ? 'infinite' : '1',
-      // @ts-ignore
-      ['--speed' as any]: `${speedSeconds}s`,
-    }}>
+    <div className="animation-wrapper" style={wrapperStyle}>
       <svg
         className="character"
         viewBox="0 0 620 400"
@@ -107,8 +111,10 @@ export default function WalkingCharacters({ loop = true, speedSeconds = 25, numC
           const fill = colors[i % colors.length]
           const translateX = i * 320
           const delaySec = (i * speedSeconds) / Math.max(1, numCharacters)
+          type CharStyle = React.CSSProperties & { ['--char-delay']?: string }
+          const charStyle: CharStyle = { ['--char-delay']: `${delaySec}s` }
           return (
-            <g key={i} className="char" style={{ ['--char-delay' as any]: `${delaySec}s` }}>
+            <g key={i} className="char" style={charStyle}>
               <use href="#CHAR" xlinkHref="#CHAR" transform={`translate(${translateX},0)`} fill={fill} />
             </g>
           )
