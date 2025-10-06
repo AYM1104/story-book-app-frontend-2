@@ -130,29 +130,13 @@ export default function Page() {
         </div>
       </div>
 
-      {/* ボタン */}
-      <div className="flex justify-center">
-        <div className="relative z-10">
-          <Button onClick={handleClickUpload}>        
-            {isUploading ? 'アップロード中...' : '画像をアップロード'}
-          </Button>
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            className="hidden"
-            onChange={handleFileSelect}
-          />
-        </div>
-      </div>
-
       {/* カード */}
       <div className="fixed bottom-[calc(env(safe-area-inset-bottom)+24px)] left-0 right-0 flex justify-center px-2 xs:px-4 sm:px-6 md:px-8 lg:px-10 z-50">
         <Card>
         {previewUrl ? (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
               {/* プレビュー画像 */}
-              <div className="w-full max-w-xs">
+              <div className="w-full max-w-sm md:max-w-md">
                 <div className="relative w-full" style={{ aspectRatio: '16/9' }}>
                   <img
                     src={previewUrl}
@@ -187,8 +171,21 @@ export default function Page() {
               </Button>
             </div>
           ) : (
-            <div className="text-center text-gray-500 py-8">
-              画像を選択してください
+            <div className="text-center py-8">
+              <div className="text-gray-500 mb-4">
+                画像を選択してください
+              </div>
+              {/* アップロードボタンをカード内に移動 */}
+              <Button onClick={handleClickUpload}>        
+                {isUploading ? 'アップロード中...' : '画像をアップロード'}
+              </Button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleFileSelect}
+              />
             </div>
           )}
         </Card>

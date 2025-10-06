@@ -5,6 +5,7 @@ import Card from '../components/Card/Card'
 import ImageUpload from '../components/ImageUpload/ImageUpload'
 import ImageGallery from '../components/ImageUpload/ImageGallery'
 import { UploadImageResponse } from '../services/imageUploadService'
+import WalkingCharacters from '@/components/Animation/WalkingCharacters'
 
 export default function Page() {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
@@ -32,18 +33,7 @@ export default function Page() {
           </p>
         </div>
 
-        <section className="upload-section">
-          <Card>
-            <div className="card-content">
-              <h2>画像をアップロード</h2>
-              <ImageUpload 
-                onUploadSuccess={handleUploadSuccess}
-                onUploadError={handleUploadError}
-                userId={1}
-              />
-            </div>
-          </Card>
-        </section>
+
 
         <section className="gallery-section">
           <Card>
@@ -54,6 +44,11 @@ export default function Page() {
               />
             </div>
           </Card>
+        </section>
+
+        {/* @animation/ のSVGアニメーション */}
+        <section className="character-section">
+          <WalkingCharacters />
         </section>
 
         <style jsx>{`
@@ -88,6 +83,17 @@ export default function Page() {
             margin-bottom: 32px;
           }
 
+          .character-section {
+            margin: 40px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 200px;
+            overflow: hidden;
+          }
+
+          /* セクションだけ既存の余白・レスポンシブは維持 */
+
           .card-content {
             padding: 24px;
           }
@@ -112,6 +118,13 @@ export default function Page() {
             .description {
               font-size: 14px;
             }
+            
+            .character-section {
+              margin: 20px 0;
+              min-height: 150px;
+            }
+
+            
             
             .card-content {
               padding: 16px;

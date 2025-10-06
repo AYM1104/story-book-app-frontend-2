@@ -9,6 +9,8 @@ import InnerCard from "@/components/Card/InnerCard";
 import HeadingText from "@/components/HeadingText/HeadingText";
 import Button from "@/components/Button/Button";
 import ProgressDots from "@/components/ProgressDots";
+import ImageGenerationAnimation from "@/components/ImageGenerationAnimation";
+import WalkingCharacters from "@/components/Animation/WalkingCharacters";
 
 export default function Page() {
   const router = useRouter()
@@ -35,6 +37,13 @@ export default function Page() {
   const [showConfirmation, setShowConfirmation] = useState(false)
   const [touchStart, setTouchStart] = useState<number | null>(null)
   const [touchEnd, setTouchEnd] = useState<number | null>(null)
+  
+  // 処理中アニメーション用の状態
+  const [isProcessing, setIsProcessing] = useState(false)
+  const [processingProgress, setProcessingProgress] = useState(0)
+  const [processingCurrent, setProcessingCurrent] = useState(0)
+  const [processingTotal, setProcessingTotal] = useState(3)
+  const [processingMessage, setProcessingMessage] = useState("回答を送信中...")
 
   // ローカルストレージから物語設定データを読み込み
   useEffect(() => {
@@ -186,7 +195,6 @@ export default function Page() {
       }
       
       setIsCompleted(true)
-      alert('ぜんぶのこたえをおくりました！')
       // 送信完了後にテーマ選択ページへ遷移
       router.push('/story-theme')
     } catch (e) {
@@ -401,6 +409,21 @@ export default function Page() {
 
       {/* キャラクター */}
       <Character bottomAligned={true} useContainerStyle={true} />
+
+      {/* 送信中オーバーレイ: 全画面に半透明背景 + SVGアニメーション */}
+      {isSubmitting && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center pointer-events-auto">
+          <div className="absolute inset-0 bg-black/40" />
+          <div className="relative w-full h-full flex items-center justify-center">
+            <div className="w-full max-w-[100vw] flex flex-col items-center gap-6 px-4">
+              <WalkingCharacters loop={false} speedSeconds={30} enableClickPause={false} />
+              <div className="text-white text-xl md:text-2xl font-bold drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]">
+                そうしんちゅう・・・
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       </div>
     </BackgroundStars>
   )

@@ -13,6 +13,7 @@ import Button from "@/components/Button/Button";
 import ProgressDots from "@/components/ProgressDots";
 import { ImageGenerationProgress } from "@/components/ProgressBar";
 import useImageGenerationProgress from "@/hooks/useImageGenerationProgress";  
+import WalkingCharacters from "@/components/Animation/WalkingCharacters";
 
 export default function Page() {
   const router = useRouter()
@@ -243,6 +244,20 @@ export default function Page() {
         <Character bottomAligned={true} useContainerStyle={true} />
 
       </div>
+      {/* 画像生成中オーバーレイ: 全画面に半透明背景 + SVGアニメーション */}
+      {isGeneratingImages && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center pointer-events-auto">
+          <div className="absolute inset-0 bg-black/40" />
+          <div className="relative w-full h-full flex items-center justify-center">
+            <div className="w-full max-w-[100vw] flex flex-col items-center gap-6 px-4">
+              <WalkingCharacters loop={false} speedSeconds={30} enableClickPause={false} />
+              <div className="text-white text-xl md:text-2xl font-bold drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]">
+                がぞうせいせいちゅう・・・
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </BackgroundStars>
   )
 }

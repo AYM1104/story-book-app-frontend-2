@@ -7,6 +7,7 @@ import Header from "@/components/Header"
 import StoryBookCard from "@/components/Card/StoryBookCard"
 import Button from "@/components/Button/Button"
 import HeadingText from "@/components/HeadingText/HeadingText"
+import ImageGenerationAnimation from "@/components/ImageGenerationAnimation"
 
 // 絵本データの型定義
 interface StoryBook {
@@ -44,6 +45,53 @@ export default function Page() {
     const [currentPage, setCurrentPage] = useState(1)
     const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null)
     const scrollContainerRef = useRef<HTMLDivElement | null>(null)
+    
+    // 画像生成中のアニメーション状態
+    const [isGeneratingImages, setIsGeneratingImages] = useState(false)
+    const [generationProgress, setGenerationProgress] = useState(0)
+    const [generationCurrent, setGenerationCurrent] = useState(0)
+    const [generationTotal, setGenerationTotal] = useState(5)
+    const [generationMessage, setGenerationMessage] = useState("素敵な絵を描いています...")
+
+    // 画像生成の進捗をシミュレートする関数
+    const simulateImageGenerationProgress = () => {
+        setGenerationProgress(0)
+        setGenerationCurrent(0)
+        setGenerationTotal(5)
+        
+        // 画像生成の進捗をシミュレート
+        const interval = setInterval(() => {
+            setGenerationCurrent(prev => {
+                const newCurrent = prev + 1
+                const newProgress = (newCurrent / 5) * 100
+                
+                setGenerationProgress(newProgress)
+                
+                // メッセージを更新
+                if (newCurrent === 1) {
+                    setGenerationMessage("1枚目の絵を描いています...")
+                } else if (newCurrent === 2) {
+                    setGenerationMessage("2枚目の絵を描いています...")
+                } else if (newCurrent === 3) {
+                    setGenerationMessage("3枚目の絵を描いています...")
+                } else if (newCurrent === 4) {
+                    setGenerationMessage("4枚目の絵を描いています...")
+                } else if (newCurrent === 5) {
+                    setGenerationMessage("5枚目の絵を描いています...")
+                    // 完了
+                    setTimeout(() => {
+                        setIsGeneratingImages(false)
+                        clearInterval(interval)
+                    }, 1000)
+                }
+                
+                return newCurrent
+            })
+        }, 2000) // 2秒間隔で進捗を更新
+        
+        // コンポーネントがアンマウントされた場合のクリーンアップ
+        return () => clearInterval(interval)
+    }
 
     // 絵本データを取得 
     useEffect(() => {
@@ -65,6 +113,14 @@ export default function Page() {
                 console.log('📚 Storybook data received:', data)
                 console.log('🖼️ Uploaded image data:', data.uploaded_image)
                 setStorybook(data)
+                
+                // 画像生成状態をチェック
+                if (data.image_generation_status === 'generating' || data.image_generation_status === 'pending') {
+                    setIsGeneratingImages(true)
+                    setGenerationMessage("絵本の絵を描いています...")
+                    // 画像生成の進捗をシミュレート（実際のAPIから進捗を取得できない場合）
+                    simulateImageGenerationProgress()
+                }
             } catch (error) {
                 console.error('絵本の取得エラー:', error)
                 setError(error instanceof Error ? error.message : '不明なエラーが発生しました')
