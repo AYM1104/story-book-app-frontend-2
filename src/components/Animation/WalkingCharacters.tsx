@@ -122,7 +122,7 @@ export default function WalkingCharacters({ loop = true, speedSeconds = 25, numC
         })}
       </svg>
 
-      <style jsx>{`
+      <style jsx global>{`
         .animation-wrapper {
           position: relative;
           width: 100%;
