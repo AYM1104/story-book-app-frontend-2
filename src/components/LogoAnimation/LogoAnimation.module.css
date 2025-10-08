@@ -1,0 +1,165 @@
+.logoContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  min-height: 200px;
+  justify-content: center;
+}
+
+.iconWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.iconWrapper svg {
+  width: 120px;
+  height: 120px;
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
+  animation: glow 2s ease-in-out infinite alternate;
+}
+
+@media (min-width: 768px) {
+  .iconWrapper svg {
+    width: 160px;
+    height: 160px;
+    filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.4));
+  }
+}
+
+@media (min-width: 1024px) {
+  .iconWrapper svg {
+    width: 200px;
+    height: 200px;
+    filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.5));
+  }
+}
+
+/* テキストアニメーション - 手書き風 */
+.textWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 60px;
+}
+
+.textSvg {
+  width: 240px;
+  height: 40px;
+  overflow: visible;
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));
+  animation: textGlow 2s ease-in-out infinite alternate;
+}
+
+@media (min-width: 768px) {
+  .textSvg {
+    width: 320px;
+    height: 50px;
+    filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.4));
+  }
+}
+
+@media (min-width: 1024px) {
+  .textSvg {
+    width: 400px;
+    height: 60px;
+    filter: drop-shadow(0 0 16px rgba(255, 255, 255, 0.5));
+  }
+}
+
+.char {
+  font-size: 48px;
+  font-weight: 600;
+  fill: none;
+  stroke: white;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 300;
+  stroke-dashoffset: 300;
+  animation: drawText 0.8s ease-out forwards;
+}
+
+@keyframes drawText {
+  from {
+    stroke-dashoffset: 300;
+    fill-opacity: 0;
+  }
+  /* 50% {
+    stroke-dashoffset: 0;
+    fill-opacity: 0;
+  } */
+  to {
+    stroke-dashoffset: 0;
+    fill: white;
+    fill-opacity: 1;
+  }
+}
+
+/* グローアニメーション */
+@keyframes glow {
+  from {
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
+  }
+  to {
+    filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.8));
+  }
+}
+
+@media (min-width: 768px) {
+  @keyframes glow {
+    from {
+      filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.4));
+    }
+    to {
+      filter: drop-shadow(0 0 25px rgba(255, 255, 255, 0.9));
+    }
+  }
+}
+
+@media (min-width: 1024px) {
+  @keyframes glow {
+    from {
+      filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.5));
+    }
+    to {
+      filter: drop-shadow(0 0 30px rgba(255, 255, 255, 1));
+    }
+  }
+}
+
+/* テキスト用グローアニメーション */
+@keyframes textGlow {
+  from {
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));
+  }
+  to {
+    filter: drop-shadow(0 0 16px rgba(255, 255, 255, 0.8));
+  }
+}
+
+@media (min-width: 768px) {
+  @keyframes textGlow {
+    from {
+      filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.4));
+    }
+    to {
+      filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.9));
+    }
+  }
+}
+
+@media (min-width: 1024px) {
+  @keyframes textGlow {
+    from {
+      filter: drop-shadow(0 0 16px rgba(255, 255, 255, 0.5));
+    }
+    to {
+      filter: drop-shadow(0 0 24px rgba(255, 255, 255, 1));
+    }
+  }
+}
+
+

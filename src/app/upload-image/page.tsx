@@ -12,6 +12,7 @@ export default function Page() {
   const fileInputRef = useRef<HTMLInputElement | null>(null)
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
+  const [uploadSuccess, setUploadSuccess] = useState(false) // アップロード成功状態を追加
 
   // 画像アップロードフック
   const {
@@ -54,6 +55,7 @@ export default function Page() {
   const handleReset = () => {
     setSelectedFile(null)
     setPreviewUrl(null)
+    setUploadSuccess(false) // アップロード成功状態もリセット
     if (fileInputRef.current) {
       fileInputRef.current.value = ''
     }
@@ -89,6 +91,7 @@ export default function Page() {
             
             if (currentImageId) {
               console.log('アップロード完了確認:', currentImageId)
+              setUploadSuccess(true) // アップロード成功状態を設定
               resolve()
             } else if (retryCount >= maxRetries) {
               reject(new Error('アップロードがタイムアウトしました。しばらく待ってから再度お試しください。'))
@@ -165,9 +168,9 @@ export default function Page() {
               <Button 
                 className="relative mt-4 z-10" 
                 onClick={handleConfirmImage}
-                disabled={isUploading}
+                disabled={isUploading || uploadSuccess}
               >
-                {isUploading ? 'アップロード中...' : 'この画像にけってい'}
+                {uploadSuccess ? 'えほんをつくっています...' : isUploading ? 'アップロード中...' : 'この画像にけってい'}
               </Button>
             </div>
           ) : (

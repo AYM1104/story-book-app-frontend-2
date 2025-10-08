@@ -5,14 +5,18 @@ interface ButtonProps {
   className?: string;
   onClick?: () => void;
   width?: number; // ボタンの幅を指定するプロパティ
+  style?: React.CSSProperties; // インラインスタイルを追加
 }
 
-export default function Button({ children, disabled, className, onClick, width }: ButtonProps) {
+export default function Button({ children, disabled, className, onClick, width, style }: ButtonProps) {
   return (
     <button
       disabled={disabled}
       onClick={onClick}
-      style={{ width: width ? `${width}px` : undefined }}
+      style={{ 
+        width: width ? `${width}px` : undefined,
+        ...style
+      }}
       className={`
         pt-1 pb-2 px-4 xs:px-7 sm:px-10 md:px-12 lg:px-15    // レスポンシブパディング
         mt-5 xs:mt-7 sm:mt-9 md:mt-12 lg:mt-13 xl:mt-2     // レスポンシブ_マージン
