@@ -24,7 +24,11 @@ declare global {
   }
 }
 
-export default function LogoAnimation() {
+interface LogoAnimationProps {
+  onTextComplete?: () => void;
+}
+
+export default function LogoAnimation({ onTextComplete }: LogoAnimationProps) {
   const [animationPlayed, setAnimationPlayed] = useState(false);
   const [showText, setShowText] = useState(false);
   const iconRef = useRef<SVGSVGElement>(null);
@@ -79,12 +83,17 @@ export default function LogoAnimation() {
                           "fill-opacity": 1,
                         },
                         60,
-                        () => {
-                          // ロゴアニメーション完了後、テキストアニメーションを開始
-                          setTimeout(() => {
-                            setShowText(true);
-                          }, 200);
-                        }
+                               () => {
+                                 // ロゴアニメーション完了後、テキストアニメーションを開始
+                                 setTimeout(() => {
+                                   setShowText(true);
+                                   
+                                   // テキストアニメーション完了後（最後の文字「ね」の遅延1000ms + アニメーション時間800ms + 余裕200ms）
+                                   setTimeout(() => {
+                                     onTextComplete?.();
+                                   }, 2000);
+                                 }, 200);
+                               }
                       );
                     }
                   });
