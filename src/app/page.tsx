@@ -1,5 +1,5 @@
 "use client"
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import BackgroundStars from '@/components/BackgroundStars'
 import LogoAnimation from "@/components/LogoAnimation/LogoAnimation";
 import Button from '@/components/Button/Button';
@@ -28,9 +28,13 @@ export default function Page() {
   const router = useRouter();
   const [showButton, setShowButton] = useState(false);
 
-  const handleTextAnimationComplete = useCallback(() => {
-    // テキストアニメーション完了後にボタンを表示
-    setShowButton(true);
+  useEffect(() => {
+    // テキストが表示されるタイミング（約2.7秒後）でボタンを表示
+    const timer = setTimeout(() => {
+      setShowButton(true);
+    }, 4700);
+
+    return () => clearTimeout(timer);
   }, []);
   
   return (
@@ -38,7 +42,7 @@ export default function Page() {
       <main className="min-h-[100dvh] flex flex-col justify-center items-center safe-area-inset-all">
         {/* ロゴアニメーション */}
         <div className="relative z-10">
-          <LogoAnimation onTextComplete={handleTextAnimationComplete} />
+          <LogoAnimation />
         </div>
         
         {/* ボタン */}

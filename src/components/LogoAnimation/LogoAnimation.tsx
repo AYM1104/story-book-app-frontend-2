@@ -1,110 +1,23 @@
 "use client"
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import styles from './LogoAnimation.module.css';
 
 // Vivusライブラリの型定義
-declare const Vivus: {
-  new (element: string, options: { duration: number; start: string }, callback?: () => void): void;
-};
-
-declare const Snap: {
-  (selector: string): {
-    attr: (attributes: Record<string, number>) => void;
-    selectAll: (selector: string) => {
-      animate: (attributes: Record<string, number>, duration: number, callback?: () => void) => void;
-    };
-  };
-};
+declare const Vivus: any;
+declare const Snap: any;
 
 // Windowインターフェースを拡張してVivusとSnapを追加
 declare global {
   interface Window {
-    Vivus?: typeof Vivus;
-    Snap?: typeof Snap;
+    Vivus?: any;
+    Snap?: any;
   }
 }
 
-interface LogoAnimationProps {
-  onTextComplete?: () => void;
-}
-
-export default function LogoAnimation({ onTextComplete }: LogoAnimationProps) {
+export default function LogoAnimation() {
   const [animationPlayed, setAnimationPlayed] = useState(false);
   const [showText, setShowText] = useState(false);
   const iconRef = useRef<SVGSVGElement>(null);
-
-  // アイコンのアニメーション関数
-  const playIconAnimation = useCallback(() => {
-    if (!animationPlayed) {
-      setAnimationPlayed(true);
-      
-      setTimeout(() => {
-        // SVGを表示
-        const snapRoot = window.Snap?.("#plant-icon");
-        if (snapRoot) {
-          snapRoot.attr({ opacity: 1 });
-
-          // 最初の部分を先に描画
-          if (window.Vivus) {
-            new window.Vivus("plant-icon", {
-              duration: 60,
-              start: 'autostart'
-            }, () => {
-              // 最初の部分の塗りをアニメーション
-              const snapRootForFill = window.Snap?.("#plant-icon");
-              if (snapRootForFill) {
-                snapRootForFill.selectAll("path").animate(
-                  {
-                    "fill-opacity": 1,
-                  },
-                  60,
-                );
-              }
-
-              // 芽と茎の部分を遅延表示（300ms後）
-              setTimeout(() => {
-                // leafGroupを表示
-                const leafGroupRoot = window.Snap?.("#leafGroup");
-                if (leafGroupRoot) {
-                  leafGroupRoot.attr({ opacity: 1 });
-                }
-
-                // Vivusで芽と茎をペン描画風にアニメーション
-                if (window.Vivus) {
-                  new window.Vivus("leafGroup", {
-                    duration: 60,
-                    start: 'autostart'
-                  }, () => {
-                    // 描画完了後、塗りをアニメーション
-                    const leafSnap = window.Snap?.("#leafGroup");
-                    if (leafSnap) {
-                      leafSnap.selectAll("path").animate(
-                        {
-                          "fill-opacity": 1,
-                        },
-                        60,
-                               () => {
-                                 // ロゴアニメーション完了後、テキストアニメーションを開始
-                                 setTimeout(() => {
-                                   setShowText(true);
-                                   
-                                   // テキストアニメーション完了後（最後の文字「ね」の遅延1000ms + アニメーション時間800ms + 余裕200ms）
-                                   setTimeout(() => {
-                                     onTextComplete?.();
-                                   }, 2000);
-                                 }, 200);
-                               }
-                      );
-                    }
-                  });
-                }
-              }, 300);
-            });
-          }
-        }
-      }, 500);
-    }
-  }, [animationPlayed]);
 
   useEffect(() => {
     // Vivus.jsとSnap.svgをロード
@@ -136,7 +49,59 @@ export default function LogoAnimation({ onTextComplete }: LogoAnimationProps) {
     };
 
     loadScripts();
-  }, [playIconAnimation]);
+  }, []);
+
+  // アイコンのアニメーション関数
+  const playIconAnimation = () => {
+    if (!animationPlayed) {
+      setAnimationPlayed(true);
+      
+      setTimeout(() => {
+        // SVGを表示
+        Snap("#plant-icon").attr({ opacity: 1 });
+        
+        // 最初の部分を先に描画
+        new Vivus("plant-icon", { 
+          duration: 60,
+          start: 'autostart'
+        }, () => {
+          // 最初の部分の塗りをアニメーション
+          Snap("#plant-icon").selectAll("path").animate(
+            {
+              "fill-opacity": 1,
+            },
+            60,
+          );
+          
+          // 芽と茎の部分を遅延表示（300ms後）
+          setTimeout(() => {
+            // leafGroupを表示
+            Snap("#leafGroup").attr({ opacity: 1 });
+            
+            // Vivusで芽と茎をペン描画風にアニメーション
+            new Vivus("leafGroup", { 
+              duration: 60,
+              start: 'autostart'
+            }, () => {
+              // 描画完了後、塗りをアニメーション
+              Snap("#leafGroup").selectAll("path").animate(
+                {
+                  "fill-opacity": 1,
+                },
+                60,
+                () => {
+                  // ロゴアニメーション完了後、テキストアニメーションを開始
+                  setTimeout(() => {
+                    setShowText(true);
+                  }, 200);
+                }
+              );
+            });
+          }, 300);
+        });
+      }, 500);
+    }
+  };
 
   return (
     <div className={styles.logoContainer}>

@@ -17,15 +17,27 @@
 .iconWrapper svg {
   width: 120px;
   height: 120px;
-  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
-  animation: glow 2s ease-in-out infinite alternate;
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5))
+          drop-shadow(0 0 20px rgba(255, 200, 150, 0.3));
+  animation: iconGlow 2s ease-in-out infinite;
+}
+
+@keyframes iconGlow {
+  0%, 100% {
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5))
+            drop-shadow(0 0 20px rgba(255, 200, 150, 0.3));
+  }
+  50% {
+    filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.8))
+            drop-shadow(0 0 30px rgba(255, 200, 150, 0.6))
+            drop-shadow(0 0 40px rgba(255, 150, 100, 0.4));
+  }
 }
 
 @media (min-width: 768px) {
   .iconWrapper svg {
     width: 160px;
     height: 160px;
-    filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.4));
   }
 }
 
@@ -33,7 +45,6 @@
   .iconWrapper svg {
     width: 200px;
     height: 200px;
-    filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.5));
   }
 }
 
@@ -49,19 +60,12 @@
   width: 240px;
   height: 40px;
   overflow: visible;
-  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));
-  animation: textGlow 2s ease-in-out infinite alternate;
-  /* パフォーマンス最適化 */
-  transform: translateZ(0);
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
 }
 
 @media (min-width: 768px) {
   .textSvg {
     width: 320px;
     height: 50px;
-    filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.4));
   }
 }
 
@@ -69,160 +73,32 @@
   .textSvg {
     width: 400px;
     height: 60px;
-    filter: drop-shadow(0 0 16px rgba(255, 255, 255, 0.5));
   }
 }
 
 .char {
-  font-size: 32px; /* スマホ用のデフォルトサイズ */
+  font-size: 48px;
   font-weight: 600;
-  fill: none;
-  stroke: white;
-  stroke-width: 1.2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-dasharray: 150;
-  stroke-dashoffset: 150;
-  animation: drawText 0.8s ease-out forwards;
-  /* ハードウェアアクセラレーションを有効化 */
-  will-change: stroke-dashoffset, fill-opacity;
-  transform: translateZ(0);
-  -webkit-transform: translateZ(0);
+  fill: white;
+  filter: drop-shadow(0 0 0px rgba(255, 255, 255, 0));
+  animation: glowText 1.2s ease-out forwards;
 }
 
-@media (min-width: 768px) {
-  .char {
-    font-size: 40px;
-    stroke-width: 1.5;
-    stroke-dasharray: 180;
-    stroke-dashoffset: 180;
-  }
-}
-
-@media (min-width: 1024px) {
-  .char {
-    font-size: 48px;
-    stroke-dasharray: 200;
-    stroke-dashoffset: 200;
-  }
-}
-
-/* スマホ用（デフォルト） */
-@keyframes drawText {
+@keyframes glowText {
   0% {
-    stroke-dashoffset: 150;
     fill-opacity: 0;
+    filter: drop-shadow(0 0 0px rgba(255, 255, 255, 0));
   }
   50% {
-    stroke-dashoffset: 0;
-    fill-opacity: 0;
+    fill-opacity: 0.8;
+    filter: drop-shadow(0 0 20px rgba(255, 255, 255, 1))
+            drop-shadow(0 0 30px rgba(255, 200, 150, 0.8))
+            drop-shadow(0 0 40px rgba(255, 150, 100, 0.6));
   }
   100% {
-    stroke-dashoffset: 0;
-    fill: white;
     fill-opacity: 1;
-  }
-}
-
-/* タブレット以上 */
-@media (min-width: 768px) {
-  @keyframes drawText {
-    0% {
-      stroke-dashoffset: 180;
-      fill-opacity: 0;
-    }
-    50% {
-      stroke-dashoffset: 0;
-      fill-opacity: 0;
-    }
-    100% {
-      stroke-dashoffset: 0;
-      fill: white;
-      fill-opacity: 1;
-    }
-  }
-}
-
-/* デスクトップ以上 */
-@media (min-width: 1024px) {
-  @keyframes drawText {
-    0% {
-      stroke-dashoffset: 200;
-      fill-opacity: 0;
-    }
-    50% {
-      stroke-dashoffset: 0;
-      fill-opacity: 0;
-    }
-    100% {
-      stroke-dashoffset: 0;
-      fill: white;
-      fill-opacity: 1;
-    }
-  }
-}
-
-/* グローアニメーション */
-@keyframes glow {
-  from {
-    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
-  }
-  to {
-    filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.8));
-  }
-}
-
-@media (min-width: 768px) {
-  @keyframes glow {
-    from {
-      filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.4));
-    }
-    to {
-      filter: drop-shadow(0 0 25px rgba(255, 255, 255, 0.9));
-    }
-  }
-}
-
-@media (min-width: 1024px) {
-  @keyframes glow {
-    from {
-      filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.5));
-    }
-    to {
-      filter: drop-shadow(0 0 30px rgba(255, 255, 255, 1));
-    }
-  }
-}
-
-/* テキスト用グローアニメーション */
-@keyframes textGlow {
-  from {
-    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));
-  }
-  to {
-    filter: drop-shadow(0 0 16px rgba(255, 255, 255, 0.8));
-  }
-}
-
-@media (min-width: 768px) {
-  @keyframes textGlow {
-    from {
-      filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.4));
-    }
-    to {
-      filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.9));
-    }
-  }
-}
-
-@media (min-width: 1024px) {
-  @keyframes textGlow {
-    from {
-      filter: drop-shadow(0 0 16px rgba(255, 255, 255, 0.5));
-    }
-    to {
-      filter: drop-shadow(0 0 24px rgba(255, 255, 255, 1));
-    }
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.6))
+            drop-shadow(0 0 12px rgba(255, 200, 150, 0.4));
   }
 }
 

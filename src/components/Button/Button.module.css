@@ -1,0 +1,45 @@
+/* ボタンの光るアニメーション */
+.glowButton {
+  position: relative;
+  filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.4));
+  animation: buttonGlow 2s ease-in-out infinite;
+}
+
+@keyframes buttonGlow {
+  0%, 100% {
+    filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.4))
+            drop-shadow(0 0 12px rgba(20, 184, 166, 0.3));
+  }
+  50% {
+    filter: drop-shadow(0 0 15px rgba(16, 185, 129, 0.7))
+            drop-shadow(0 0 25px rgba(20, 184, 166, 0.5))
+            drop-shadow(0 0 35px rgba(6, 182, 212, 0.3));
+  }
+}
+
+/* ホバー時のスケールアップ */
+.glowButton:hover {
+  transform: scale(1.08);
+  filter: drop-shadow(0 0 20px rgba(16, 185, 129, 0.8))
+          drop-shadow(0 0 30px rgba(20, 184, 166, 0.6))
+          drop-shadow(0 0 40px rgba(6, 182, 212, 0.4));
+  animation: none; /* ホバー時はpulseアニメーションを停止 */
+}
+
+/* クリック時のエフェクト */
+.glowButton:active {
+  transform: scale(0.95);
+}
+
+/* トランジション */
+.glowButton {
+  transition: transform 0.2s ease-out, filter 0.3s ease-out;
+}
+
+/* 無効化された時はアニメーション停止 */
+.glowButton:disabled {
+  animation: none;
+  filter: none;
+  transform: none;
+}
+
