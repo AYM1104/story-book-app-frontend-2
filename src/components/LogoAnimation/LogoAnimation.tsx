@@ -1,16 +1,35 @@
 "use client"
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import styles from './LogoAnimation.module.css';
 
 // Vivusライブラリの型定義
-declare const Vivus: any;
-declare const Snap: any;
+interface VivusOptions {
+  duration?: number;
+  start?: string;
+}
+
+interface VivusConstructor {
+  new (id: string, options: VivusOptions, callback?: () => void): unknown;
+}
+
+interface SnapElement {
+  attr: (attrs: Record<string, unknown>) => SnapElement;
+  selectAll: (selector: string) => SnapElement;
+  animate: (attrs: Record<string, unknown>, duration: number, callback?: () => void) => SnapElement;
+}
+
+interface SnapStatic {
+  (selector: string): SnapElement;
+}
+
+declare const Vivus: VivusConstructor;
+declare const Snap: SnapStatic;
 
 // Windowインターフェースを拡張してVivusとSnapを追加
 declare global {
   interface Window {
-    Vivus?: any;
-    Snap?: any;
+    Vivus?: VivusConstructor;
+    Snap?: SnapStatic;
   }
 }
 
@@ -19,40 +38,8 @@ export default function LogoAnimation() {
   const [showText, setShowText] = useState(false);
   const iconRef = useRef<SVGSVGElement>(null);
 
-  useEffect(() => {
-    // Vivus.jsとSnap.svgをロード
-    const loadScripts = async () => {
-      // Vivus.jsをロード
-      if (!window.Vivus) {
-        const vivusScript = document.createElement('script');
-        vivusScript.src = 'https://cdn.jsdelivr.net/npm/vivus@0.4.6/dist/vivus.min.js';
-        document.head.appendChild(vivusScript);
-        
-        await new Promise((resolve) => {
-          vivusScript.onload = resolve;
-        });
-      }
-
-      // Snap.svgをロード
-      if (!window.Snap) {
-        const snapScript = document.createElement('script');
-        snapScript.src = 'https://cdn.jsdelivr.net/npm/snapsvg@0.5.1/dist/snap.svg-min.js';
-        document.head.appendChild(snapScript);
-        
-        await new Promise((resolve) => {
-          snapScript.onload = resolve;
-        });
-      }
-
-      // アニメーションを開始
-      playIconAnimation();
-    };
-
-    loadScripts();
-  }, []);
-
   // アイコンのアニメーション関数
-  const playIconAnimation = () => {
+  const playIconAnimation = useCallback(() => {
     if (!animationPlayed) {
       setAnimationPlayed(true);
       
@@ -101,7 +88,39 @@ export default function LogoAnimation() {
         });
       }, 500);
     }
-  };
+  }, [animationPlayed]);
+
+  useEffect(() => {
+    // Vivus.jsとSnap.svgをロード
+    const loadScripts = async () => {
+      // Vivus.jsをロード
+      if (!window.Vivus) {
+        const vivusScript = document.createElement('script');
+        vivusScript.src = 'https://cdn.jsdelivr.net/npm/vivus@0.4.6/dist/vivus.min.js';
+        document.head.appendChild(vivusScript);
+        
+        await new Promise((resolve) => {
+          vivusScript.onload = resolve;
+        });
+      }
+
+      // Snap.svgをロード
+      if (!window.Snap) {
+        const snapScript = document.createElement('script');
+        snapScript.src = 'https://cdn.jsdelivr.net/npm/snapsvg@0.5.1/dist/snap.svg-min.js';
+        document.head.appendChild(snapScript);
+        
+        await new Promise((resolve) => {
+          snapScript.onload = resolve;
+        });
+      }
+
+      // アニメーションを開始
+      playIconAnimation();
+    };
+
+    loadScripts();
+  }, [playIconAnimation]);
 
   return (
     <div className={styles.logoContainer}>
