@@ -36,47 +36,59 @@ export default function LogoAnimation() {
       
       setTimeout(() => {
         // SVGを表示
-        if (window.Snap) {
-          window.Snap("#plant-icon").attr({ opacity: 1 });
-          
+        const snapRoot = window.Snap?.("#plant-icon");
+        if (snapRoot) {
+          snapRoot.attr({ opacity: 1 });
+
           // 最初の部分を先に描画
           if (window.Vivus) {
-            new window.Vivus("plant-icon", { 
+            new window.Vivus("plant-icon", {
               duration: 60,
               start: 'autostart'
             }, () => {
               // 最初の部分の塗りをアニメーション
-              window.Snap("#plant-icon").selectAll("path").animate(
-                {
-                  "fill-opacity": 1,
-                },
-                60,
-              );
-              
+              const snapRootForFill = window.Snap?.("#plant-icon");
+              if (snapRootForFill) {
+                snapRootForFill.selectAll("path").animate(
+                  {
+                    "fill-opacity": 1,
+                  },
+                  60,
+                );
+              }
+
               // 芽と茎の部分を遅延表示（300ms後）
               setTimeout(() => {
                 // leafGroupを表示
-                window.Snap("#leafGroup").attr({ opacity: 1 });
-                
+                const leafGroupRoot = window.Snap?.("#leafGroup");
+                if (leafGroupRoot) {
+                  leafGroupRoot.attr({ opacity: 1 });
+                }
+
                 // Vivusで芽と茎をペン描画風にアニメーション
-                new window.Vivus("leafGroup", { 
-                  duration: 60,
-                  start: 'autostart'
-                }, () => {
-                  // 描画完了後、塗りをアニメーション
-                  window.Snap("#leafGroup").selectAll("path").animate(
-                    {
-                      "fill-opacity": 1,
-                    },
-                    60,
-                    () => {
-                      // ロゴアニメーション完了後、テキストアニメーションを開始
-                      setTimeout(() => {
-                        setShowText(true);
-                      }, 200);
+                if (window.Vivus) {
+                  new window.Vivus("leafGroup", {
+                    duration: 60,
+                    start: 'autostart'
+                  }, () => {
+                    // 描画完了後、塗りをアニメーション
+                    const leafSnap = window.Snap?.("#leafGroup");
+                    if (leafSnap) {
+                      leafSnap.selectAll("path").animate(
+                        {
+                          "fill-opacity": 1,
+                        },
+                        60,
+                        () => {
+                          // ロゴアニメーション完了後、テキストアニメーションを開始
+                          setTimeout(() => {
+                            setShowText(true);
+                          }, 200);
+                        }
+                      );
                     }
-                  );
-                });
+                  });
+                }
               }, 300);
             });
           }
