@@ -76,12 +76,6 @@ export default function LogoAnimation() {
                   "fill-opacity": 1,
                 },
                 60,
-                () => {
-                  // ロゴアニメーション完了後、テキストアニメーションを開始
-                  setTimeout(() => {
-                    setShowText(true);
-                  }, 200);
-                }
               );
             });
           }, 300);
@@ -121,6 +115,15 @@ export default function LogoAnimation() {
 
     loadScripts();
   }, [playIconAnimation]);
+
+  // テキストアニメーションのタイマー（CSSアニメーション用）
+  useEffect(() => {
+    const textTimer = setTimeout(() => {
+      setShowText(true);
+    }, 3500); // アイコンアニメーション完了後に表示
+
+    return () => clearTimeout(textTimer);
+  }, []);
 
   return (
     <div className={styles.logoContainer}>

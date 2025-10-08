@@ -30,6 +30,7 @@ export default function Page() {
         <div className={`relative z-10 mt-8 transition-opacity duration-1000 ${showButton ? 'opacity-100' : 'opacity-0'}`}>
           <Button 
             onClick={() => router.push("/upload-image")}
+            className="!animate-none"
           >        
             えほんをつくる
           </Button>
