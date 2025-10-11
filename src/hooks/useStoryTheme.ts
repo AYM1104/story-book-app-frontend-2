@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import { StoryPlotItem } from '../lib/types';
 
+// バックエンドAPIのベースURL
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
 interface TitleItem {
   story_plot_id: number;
   title: string;
@@ -53,7 +56,7 @@ export default function useStoryTheme(): UseStoryThemeReturn {
       setError(null);
       
       try {
-        const url = `https://story-book-backend-20459204449.asia-northeast1.run.app/story/story_plots?user_id=${userId}&story_setting_id=${storySettingId}&limit=3`;
+        const url = `${API_BASE_URL}/story/story_plots?user_id=${userId}&story_setting_id=${storySettingId}&limit=3`;
         console.log('🔍 Fetching URL:', url);
         console.log('🔍 User ID:', userId, 'Story Setting ID:', storySettingId);
         

@@ -1,5 +1,8 @@
 import { StoryPlotItem as TitleItem, ImageGenerationResult, GeneratedImage } from '../lib/types';
 
+// バックエンドAPIのベースURL
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
 interface ImageGenerationResponse {
   total_generated: number;
 }
@@ -43,7 +46,7 @@ export async function generateStoryPlotImages(
   prefix: string = "storyplot_i2i_all",
   referenceImagePath?: string
 ): Promise<ImageGenerationResponse> {
-  const url = 'https://story-book-backend-20459204449.asia-northeast1.run.app/images/generation/generate-storyplot-all-pages-image-to-image';
+  const url = `${API_BASE_URL}/images/generation/generate-storyplot-all-pages-image-to-image`;
   const payload = {
     story_plot_id: storyPlotId,
     strength,
@@ -86,7 +89,7 @@ export async function generateStoryPlotImages(
  * - backend: POST /storybook/confirm-theme-and-create
  */
 async function confirmThemeAndCreate(storyPlotId: number, selectedTheme: string): Promise<ThemeConfirmationResponse> {
-  const url = 'https://story-book-backend-20459204449.asia-northeast1.run.app/storybook/confirm-theme-and-create';
+  const url = `${API_BASE_URL}/storybook/confirm-theme-and-create`;
   const payload = { story_plot_id: storyPlotId, selected_theme: selectedTheme };
   
   console.log('📚 Theme confirmation request:', { url, payload });
@@ -123,7 +126,7 @@ async function confirmThemeAndCreate(storyPlotId: number, selectedTheme: string)
  * - backend: POST /storybook/update-image-urls
  */
 async function updateStorybookImageUrls(payload: StorybookImageUrlUpdateRequest): Promise<StorybookImageUrlUpdateResponse> {
-  const url = 'https://story-book-backend-20459204449.asia-northeast1.run.app/storybook/update-image-urls';
+  const url = `${API_BASE_URL}/storybook/update-image-urls`;
   
   console.log('🔄 Image URL update request:', { url, payload });
   

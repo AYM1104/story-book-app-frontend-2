@@ -9,6 +9,9 @@ import Button from "@/components/Button/Button"
 import HeadingText from "@/components/HeadingText/HeadingText"
 import ImageGenerationAnimation from "@/components/ImageGenerationAnimation"
 
+// バックエンドAPIのベースURL
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
 // 絵本データの型定義
 interface StoryBook {
   id: number
@@ -100,7 +103,7 @@ export default function Page() {
                 setLoading(true)
                 setError(null)
                 
-                const response = await fetch(`https://story-book-backend-20459204449.asia-northeast1.run.app/storybook/${storybookId}`)
+                const response = await fetch(`${API_BASE_URL}/storybook/${storybookId}`)
                 
                 if (!response.ok) {
                     if (response.status === 404) {

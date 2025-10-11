@@ -32,15 +32,16 @@ export function useImageUpload() {
     const parts = uploadedImagePath.replace(/\\/g, '/').split('/')
     const filename = parts[parts.length - 1]
     
-    // 現在のバックエンドサーバーのアドレスとポートを使用
-    const baseUrl = 'https://story-book-backend-20459204449.asia-northeast1.run.app'
+    // 環境変数からバックエンドURLを取得
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
     return `${baseUrl}/uploads/${filename}`
   }, [uploadedImagePath])
 
   // 公開URLを取得する関数
   const getPublicUrl = useCallback(async (imageId: number) => {
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
     try {
-      const response = await fetch(`https://story-book-backend-20459204449.asia-northeast1.run.app/images/${imageId}/signed-url`)
+      const response = await fetch(`${baseUrl}/images/${imageId}/signed-url`)
       if (!response.ok) {
         throw new Error(`Failed to get public URL: ${response.status}`)
       }
@@ -67,8 +68,9 @@ export function useImageUpload() {
     setIsUploading(true)
     try {
       console.log('アップロードを開始...', file.name)
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
       
-      const res = await fetch('https://story-book-backend-20459204449.asia-northeast1.run.app/images/upload', {
+      const res = await fetch(`${baseUrl}/images/upload`, {
         method: 'POST',
         body: formData,
       })
@@ -137,7 +139,8 @@ export function useImageUpload() {
     
     try {
       console.log('物語設定作成開始、画像ID:', imageId)
-      const res = await fetch(`https://story-book-backend-20459204449.asia-northeast1.run.app/story/story_settings/${imageId}`, {
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+      const res = await fetch(`${baseUrl}/story/story_settings/${imageId}`, {
         method: 'POST',
       })
       if (!res.ok) {
