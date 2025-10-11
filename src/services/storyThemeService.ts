@@ -85,6 +85,43 @@ export async function generateStoryPlotImages(
 }
 
 /**
+ * 選択されたテーマの物語本文を生成
+ * - backend: POST /story/select_theme
+ */
+async function generateStoryForTheme(storySettingId: number, selectedTheme: string): Promise<{ story_plot_id: number; title: string }> {
+  const url = `${API_BASE_URL}/story/select_theme`;
+  const payload = { story_setting_id: storySettingId, selected_theme: selectedTheme };
+  
+  console.log('📖 Story generation request:', { url, payload });
+  
+  try {
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload)
+    });
+
+    console.log('📖 Story generation response status:', res.status);
+    console.log('📖 Story generation response ok:', res.ok);
+
+    if (!res.ok) {
+      const msg = await res.text();
+      console.error('❌ Story generation failed:', msg);
+      throw new Error(msg || '物語生成に失敗しました');
+    }
+
+    const result = await res.json();
+    console.log('📖 Story generation result:', result);
+    return result;
+  } catch (error) {
+    console.error('❌ Story generation fetch error:', error);
+    throw error;
+  }
+}
+
+/**
  * テーマを確定してストーリーブックを作成
  * - backend: POST /storybook/confirm-theme-and-create
  */
@@ -158,25 +195,37 @@ async function updateStorybookImageUrls(payload: StorybookImageUrlUpdateRequest)
 }
 
 /**
- * テーマ選択処理（画像生成を含む）
+ * テーマ選択処理（物語生成と画像生成を含む）
  * @param currentTheme 選択されたテーマ
+ * @param storySettingId ストーリー設定ID
  * @param onProgress 進捗更新のコールバック関数
  * @returns 生成された画像数とstorybook_id
  */
 export async function handleSelectTheme(
   currentTheme: TitleItem,
+  storySettingId: number,
   onProgress?: (current: number, total: number, pageNumber?: number, status?: 'generating' | 'completed' | 'failed') => void
 ): Promise<{ totalGenerated: number; storybookId: number }> {
   if (!currentTheme) {
     throw new Error('テーマが選択されていません');
   }
 
-  // 1) テーマ確定して StoryBook を作成
-  //    - selected_theme は UI上のタイトルを採用（サーバ側のgenerated_storiesキーと一致する前提）
+  // selected_theme は UI上のタイトルを採用（サーバ側のtheme_optionsキーと一致する前提）
   const themeKey = currentTheme.selected_theme ?? currentTheme.title;
-  const { storybook_id } = await confirmThemeAndCreate(currentTheme.story_plot_id, themeKey);
 
-  // 2) 画像生成（全ページ i2i 生成）: アップロード画像の参照パスを明示指定
+  // 1) 選択されたテーマの物語本文を生成
+  console.log('📖 ステップ1: 選択されたテーマの物語を生成中...');
+  const storyResult = await generateStoryForTheme(storySettingId, themeKey);
+  const storyPlotId = storyResult.story_plot_id;
+  console.log(`✅ 物語生成完了: story_plot_id=${storyPlotId}`);
+
+  // 2) テーマ確定して StoryBook を作成
+  console.log('📚 ステップ2: ストーリーブックを作成中...');
+  const { storybook_id } = await confirmThemeAndCreate(storyPlotId, themeKey);
+  console.log(`✅ ストーリーブック作成完了: storybook_id=${storybook_id}`);
+
+  // 3) 画像生成（全ページ i2i 生成）: アップロード画像の参照パスを明示指定
+  console.log('🖼️ ステップ3: 画像生成中...');
   let referencePath: string | undefined = undefined;
   try {
     const stored = typeof window !== 'undefined' ? localStorage.getItem('uploaded_image_path') : null;
@@ -188,10 +237,11 @@ export async function handleSelectTheme(
   // 進捗更新コールバックを呼び出し
   onProgress?.(0, 5);
   
-  const result: ImageGenerationResult = await generateStoryPlotImages(currentTheme.story_plot_id, undefined, 'storyplot_i2i_all', referencePath);
+  const result: ImageGenerationResult = await generateStoryPlotImages(storyPlotId, undefined, 'storyplot_i2i_all', referencePath);
+  console.log(`✅ 画像生成完了: ${result.total_generated}枚`);
 
-  // 3) 生成結果を page_n_image_url に割り当てて更新
-  //    - backendはURL想定だが、現状はローカルのファイルパスをそのまま保存
+  // 4) 生成結果を page_n_image_url に割り当てて更新
+  console.log('🔄 ステップ4: 画像URLを更新中...');
   if (Array.isArray(result?.images) && result.images.length > 0) {
     // page_number でソートし、対応するpage_nに入れる
     const byPage = new Map<number, string>();
@@ -212,11 +262,13 @@ export async function handleSelectTheme(
 
     try {
       await updateStorybookImageUrls(updatePayload);
+      console.log('✅ 画像URL更新完了');
     } catch (e) {
       // 画像URL更新に失敗しても、生成枚数は返す
-      console.error(e);
+      console.error('⚠️ 画像URL更新エラー:', e);
     }
   }
 
+  console.log('✅ 全処理完了');
   return { totalGenerated: result.total_generated, storybookId: storybook_id };
 }

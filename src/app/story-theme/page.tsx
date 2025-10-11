@@ -19,6 +19,7 @@ export default function Page() {
   const router = useRouter()
   const [isGeneratingImages, setIsGeneratingImages] = useState(false)
   const {
+    storySettingId,
     latestTitles,
     titleSlideIndex,
     prevTitle,
@@ -37,11 +38,16 @@ export default function Page() {
     resetProgress
   } = useImageGenerationProgress()
 
-  // テーマ選択（画像生成）処理
+  // テーマ選択（物語生成と画像生成）処理
   const onSelectTheme = async () => {
     const currentTheme = latestTitles[titleSlideIndex]
     if (!currentTheme) {
       alert('テーマが選択されていません')
+      return
+    }
+
+    if (!storySettingId) {
+      alert('ストーリー設定IDが見つかりません')
       return
     }
 
@@ -63,7 +69,7 @@ export default function Page() {
         }
       }
       
-      const { totalGenerated, storybookId } = await handleSelectTheme(currentTheme, handleProgress)
+      const { totalGenerated, storybookId } = await handleSelectTheme(currentTheme, storySettingId, handleProgress)
       
       finishGeneration()
       
@@ -91,7 +97,7 @@ export default function Page() {
         <div className="flex justify-center text-center mt-2 md:mt-8 lg:mt-1">
           <div className="relative z-10">
             <HeadingText>
-              すきなおはなしを
+              すきな おはなし を
               <br className="md:hidden" />
               えらんでね！
             </HeadingText>
